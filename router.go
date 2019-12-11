@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"io"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -19,5 +19,10 @@ func NewRouter() {
 // IndexRouter is the root level endpoint that's returned when a user requests the "/" endpoint.
 // This route will likely be utilized in the future to show the current server status.
 func IndexRouter(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Hello World")
+	// Using JSON, set a very basic health check
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	// TODO: add in additional health metrics, such as uptime, database connections, etc.
+	io.WriteString(w, `{"alive": true}`)
 }
