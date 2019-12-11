@@ -2,12 +2,11 @@ version: 2.1
 orbs:
   go: circleci/go@0.2.0
 executors:
-  - go/default
+  golang: go/default
 jobs:
   build:
     working_directory: /go/src/github.com/tylerconlee/SlabAPI
-
-      
+    executor: golang   
     steps:
       - checkout
       - go/load-cache
@@ -15,6 +14,7 @@ jobs:
       - go/save-cache
   test:
     working_directory: /go/src/github.com/tylerconlee/SlabAPI
+    executor: golang
     parallelism: 2
     steps:
       - checkout
