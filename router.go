@@ -13,7 +13,7 @@ import (
 func NewRouter() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", IndexRouter)
-	http.Handle("/", r)
+	http.ListenAndServe(":8000", r)
 }
 
 // IndexRouter is the root level endpoint that's returned when a user requests the "/" endpoint.
