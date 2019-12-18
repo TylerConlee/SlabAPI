@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/newrelic/go-agent/v3/integrations/nrgorilla"
 )
 
 // NewRouter initializes a new router, or map, for any request incoming to the API.
@@ -13,7 +14,7 @@ import (
 func NewRouter() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", IndexRouter)
-	http.ListenAndServe(":8000", r)
+	http.ListenAndServe(":8000", nrgorilla.InstrumentRoutes(r, nrApp))
 }
 
 // IndexRouter is the root level endpoint that's returned when a user requests the "/" endpoint.
