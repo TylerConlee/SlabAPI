@@ -29,7 +29,7 @@ func IndexRouter(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, `{"alive": true}`)
 }
 
-// IndexRouter is the root level endpoint that's returned when a user requests the "/" endpoint.
+// GetConfigHandler is the root level endpoint that's returned when a user requests the "/" endpoint.
 // This route will likely be utilized in the future to show the current server status.
 func GetConfigHandler(w http.ResponseWriter, r *http.Request) {
 	// Using JSON, set a very basic health check

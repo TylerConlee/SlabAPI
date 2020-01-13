@@ -10,12 +10,14 @@ import (
 
 var (
 	nrConfig string
+	conPath  string // Path for the configuration file to be loaded by Slab
 
 	nrApp *newrelic.Application
 )
 
 func main() {
 	flag.StringVar(&nrConfig, "newrelic", "", "New Relic configuration key")
+	flag.StringVar(&conPath, "config", "slabAPI-config.toml", "Path to SlabAPI configuration file")
 	flag.Parse()
 	hostname, err := os.Hostname()
 	if err != nil {
