@@ -9,6 +9,7 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
+	github.com/lib/pq v1.3.0
 	github.com/namsral/flag v1.7.4-pre
 	github.com/newrelic/go-agent/v3 v3.0.0
 	github.com/newrelic/go-agent/v3/integrations/nrgorilla v1.0.0

@@ -2,7 +2,9 @@ package resolver
 
 import (
 	"context"
+	"log"
 
+	"github.com/tylerconlee/SlabAPI/datastore"
 	"github.com/tylerconlee/SlabAPI/graph"
 	"github.com/tylerconlee/SlabAPI/model"
 )
@@ -11,27 +13,32 @@ import (
 
 type Resolver struct{}
 
+var db *datastore.Db
+
 func (r *Resolver) Mutation() graph.MutationResolver {
 	return &mutationResolver{r}
 }
 func (r *Resolver) Query() graph.QueryResolver {
+	db, err := datastore.New(
+		datastore.ConnString(),
+	)
+	if err != nil {
+		log.Fatal("Error connecting to Postgres database: %s", err)
+	}
+	defer db.Close()
 	return &queryResolver{r}
 }
 
 type mutationResolver struct{ *Resolver }
 
 func (r *mutationResolver) UpdateZendeskConfig(ctx context.Context, user string, apikey string, url string) (*model.ZendeskConfig, error) {
-	panic("not implemented updatezendeskconfig")
+	panic("not implemented")
 }
 func (r *mutationResolver) UpdateSlackConfig(ctx context.Context, apikey string, channel string) (*model.SlackConfig, error) {
-	panic("not implemented updateslackconfig")
+	panic("not implemented")
 }
 func (r *mutationResolver) UpdatePostgresConfig(ctx context.Context, host string, port int, user string, password string, dbname string) (*model.PostgresConfig, error) {
-	panic("not implemented updatepostgresconfig")
+	panic("not implemented")
 }
 
 type queryResolver struct{ *Resolver }
-
-func (r *queryResolver) Config(ctx context.Context) (*model.Config, error) {
-	panic("not implemented getconfig")
-}

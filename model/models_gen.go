@@ -2,27 +2,21 @@
 
 package model
 
-type Config struct {
-	Zendesk  *ZendeskConfig  `json:"zendesk"`
-	Slack    *SlackConfig    `json:"slack"`
-	Postgres *PostgresConfig `json:"postgres"`
-}
-
 type PostgresConfig struct {
-	Host     *string `json:"host"`
-	Port     *int    `json:"port"`
-	User     *string `json:"user"`
-	Password *string `json:"password"`
-	Dbname   *string `json:"dbname"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	User     string `json:"user"`
+	Password string `json:"password"`
+	Dbname   string `json:"dbname"`
 }
 
 type SlackConfig struct {
-	Apikey  *string `json:"apikey"`
-	Channel *string `json:"channel"`
+	Apikey  string `json:"apikey"`
+	Channel string `json:"channel"`
 }
 
 type ZendeskConfig struct {
-	User   *string `json:"user"`
-	Apikey *string `json:"apikey"`
-	URL    *string `json:"url"`
+	User   string `json:"user"`
+	Apikey string `json:"apikey"`
+	URL    string `json:"url"`
 }
