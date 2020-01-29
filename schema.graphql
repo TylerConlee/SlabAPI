@@ -1,0 +1,34 @@
+type Query {
+    config: Config!
+}
+type Mutation {
+    updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
+    updateSlackConfig(apikey:String!,channel:String!): SlackConfig!
+    updatePostgresConfig(host:String!,port:Int!,user:String!,password:String!,dbname:String!): PostgresConfig!
+}
+
+
+type Config{
+    zendesk: ZendeskConfig
+    slack: SlackConfig
+    postgres: PostgresConfig
+}
+
+type ZendeskConfig {
+    user: String
+    apikey: String
+    url: String
+}
+
+type SlackConfig {
+    apikey: String
+    channel: String
+}
+
+type PostgresConfig {
+    host: String
+    port: Int
+    user: String
+    password: String
+    dbname: String
+}

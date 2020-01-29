@@ -3,9 +3,13 @@ package main
 import (
 	"io"
 	"net/http"
+	
 
 	"github.com/gorilla/mux"
+	"github.com/99designs/gqlgen/handler"
 	"github.com/newrelic/go-agent/v3/integrations/nrgorilla"
+	"github.com/tylerconlee/SlabAPI/resolver"
+	"github.com/tylerconlee/SlabAPI/graph"
 )
 
 // NewRouter initializes a new router, or map, for any request incoming to the API.
@@ -14,6 +18,8 @@ import (
 func NewRouter() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", IndexRouter)
+	r.HandleFunc("/graphql", handler.Playground("GraphQL playground", "/query"))
+	r.HandleFunc("/query",  handler.GraphQL(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}})))
 	http.ListenAndServe(":8000", nrgorilla.InstrumentRoutes(r, nrApp))
 }
 
