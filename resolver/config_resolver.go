@@ -4,18 +4,11 @@ import (
 	"context"
 	"log"
 
-	"github.com/tylerconlee/SlabAPI/datastore"
 	"github.com/tylerconlee/SlabAPI/model"
 )
 
 func (r *queryResolver) Zendeskconfig(ctx context.Context) (*model.ZendeskConfig, error) {
-	db, err := datastore.New(
-		datastore.ConnString(),
-	)
-	if err != nil {
-		log.Fatal("Error connecting to Postgres database", err)
-	}
-	defer db.Close()
+
 	con, err := db.Query(`SELECT name, apikey, url FROM zendesk`)
 	if err != nil {
 		log.Fatal(err.Error())
