@@ -14,7 +14,9 @@ var db *datastore.Db
 type Resolver struct{}
 
 func (r *Resolver) Mutation() graph.MutationResolver {
-
+	db, _ = datastore.New(
+		datastore.ConnString(),
+	)
 	return &mutationResolver{r}
 }
 func (r *Resolver) Query() graph.QueryResolver {
