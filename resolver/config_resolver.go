@@ -2,13 +2,24 @@ package resolver
 
 import (
 	"context"
+	"log"
 
+	"github.com/tylerconlee/SlabAPI/datastore"
 	"github.com/tylerconlee/SlabAPI/model"
 )
 
 func (r *queryResolver) Zendeskconfig(ctx context.Context) (*model.ZendeskConfig, error) {
-	var query = "SELECT * FROM zendesk"
-	con, err := db.Query(query)
+	db, err := datastore.New(
+		datastore.ConnString(),
+	)
+	if err != nil {
+		log.Fatal("Error connecting to Postgres database", err)
+	}
+	defer db.Close()
+	con, err := db.Query(`SELECT name, apikey, url FROM zendesk`)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 	var zenconfig *model.ZendeskConfig
 	for con.Next() {
 		var user, apikey, url string
@@ -18,7 +29,7 @@ func (r *queryResolver) Zendeskconfig(ctx context.Context) (*model.ZendeskConfig
 		}
 		zenconfig = &model.ZendeskConfig{User: user, Apikey: apikey, URL: url}
 	}
-	return zenconfig, err
+	return zenconfig, nil
 }
 func (r *queryResolver) Slackconfig(ctx context.Context) (*model.SlackConfig, error) {
 	panic("not implemented")

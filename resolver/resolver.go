@@ -2,9 +2,7 @@ package resolver
 
 import (
 	"context"
-	"log"
 
-	"github.com/tylerconlee/SlabAPI/datastore"
 	"github.com/tylerconlee/SlabAPI/graph"
 	"github.com/tylerconlee/SlabAPI/model"
 )
@@ -13,19 +11,11 @@ import (
 
 type Resolver struct{}
 
-var db *datastore.Db
-
 func (r *Resolver) Mutation() graph.MutationResolver {
 	return &mutationResolver{r}
 }
 func (r *Resolver) Query() graph.QueryResolver {
-	db, err := datastore.New(
-		datastore.ConnString(),
-	)
-	if err != nil {
-		log.Fatal("Error connecting to Postgres database: %s", err)
-	}
-	defer db.Close()
+
 	return &queryResolver{r}
 }
 
