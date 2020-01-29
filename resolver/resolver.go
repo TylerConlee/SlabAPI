@@ -14,13 +14,13 @@ var db *datastore.Db
 type Resolver struct{}
 
 func (r *Resolver) Mutation() graph.MutationResolver {
+
 	return &mutationResolver{r}
 }
 func (r *Resolver) Query() graph.QueryResolver {
 	db, _ = datastore.New(
 		datastore.ConnString(),
 	)
-	defer db.Close()
 	return &queryResolver{r}
 }
 

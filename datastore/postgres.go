@@ -9,6 +9,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// checkTables is a boolean that's set when the app is first ran
+// to determine if Postgres should attempt to add tables to the database
+var checkTables bool = false
+
 // Db is our database struct used for interacting with the database
 type Db struct {
 	*sql.DB
@@ -27,7 +31,10 @@ func New(connString string) (*Db, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	if !checkTables {
+		createTables(db)
+		checkTables = true
+	}
 	return &Db{db}, nil
 }
 
