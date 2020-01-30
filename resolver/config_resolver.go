@@ -8,9 +8,11 @@ import (
 )
 
 // ***** GET config functions ***** //
+// Zendeskconfig retrieves the Zendesk configuration from the postgres database
+// and returns it as a Zendeskconfig model.
 func (r *queryResolver) Zendeskconfig(ctx context.Context) (*model.ZendeskConfig, error) {
 
-	con, err := db.Query(`SELECT name, apikey, url FROM zendesk`)
+	con, err := db.Query(`SELECT zen_user, zen_apikey, zen_url FROM config`)
 	if err != nil {
 		log.Fatal(err.Error())
 	}

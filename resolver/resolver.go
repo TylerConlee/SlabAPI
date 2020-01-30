@@ -8,14 +8,18 @@ import (
 // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
 var db *datastore.Db
 
+// Resolver references a generic resolution to a query made against the API
 type Resolver struct{}
 
+// Mutation contains everything that runs during a mutation query against the API
 func (r *Resolver) Mutation() graph.MutationResolver {
 	db, _ = datastore.New(
 		datastore.ConnString(),
 	)
 	return &mutationResolver{r}
 }
+
+// Query contains everything that runs during a general query against the API
 func (r *Resolver) Query() graph.QueryResolver {
 	db, _ = datastore.New(
 		datastore.ConnString(),
