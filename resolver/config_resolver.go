@@ -22,6 +22,7 @@ func (r *queryResolver) Zendeskconfig(ctx context.Context) (*model.ZendeskConfig
 		}
 		zenconfig = &model.ZendeskConfig{User: user, Apikey: apikey, URL: url}
 	}
+	defer db.Close()
 	return zenconfig, nil
 }
 func (r *queryResolver) Slackconfig(ctx context.Context) (*model.SlackConfig, error) {
