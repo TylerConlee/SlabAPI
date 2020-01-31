@@ -61,5 +61,14 @@ func (r *mutationResolver) UpdateZendeskConfig(ctx context.Context, user string,
 
 }
 func (r *mutationResolver) UpdateSlackConfig(ctx context.Context, apikey string, channel string) (*model.SlackConfig, error) {
-	panic("not implemented")
+	var result model.SlackConfig
+
+	conf, err := db.Prepare("UPDATE config SET slack_channel = $1, slack_apikey = $2")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	conf.Exec(channel, apikey)
+	result = model.SlackConfig{Channel: channel, Apikey: apikey}
+	defer db.Close()
+	return &result, err
 }
