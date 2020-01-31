@@ -44,23 +44,13 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		UpdatePostgresConfig func(childComplexity int, host string, port int, user string, password string, dbname string) int
-		UpdateSlackConfig    func(childComplexity int, apikey string, channel string) int
-		UpdateZendeskConfig  func(childComplexity int, user string, apikey string, url string) int
-	}
-
-	PostgresConfig struct {
-		Dbname   func(childComplexity int) int
-		Host     func(childComplexity int) int
-		Password func(childComplexity int) int
-		Port     func(childComplexity int) int
-		User     func(childComplexity int) int
+		UpdateSlackConfig   func(childComplexity int, apikey string, channel string) int
+		UpdateZendeskConfig func(childComplexity int, user string, apikey string, url string) int
 	}
 
 	Query struct {
-		Postgresconfig func(childComplexity int) int
-		Slackconfig    func(childComplexity int) int
-		Zendeskconfig  func(childComplexity int) int
+		Slackconfig   func(childComplexity int) int
+		Zendeskconfig func(childComplexity int) int
 	}
 
 	SlackConfig struct {
@@ -78,12 +68,10 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	UpdateZendeskConfig(ctx context.Context, user string, apikey string, url string) (*model.ZendeskConfig, error)
 	UpdateSlackConfig(ctx context.Context, apikey string, channel string) (*model.SlackConfig, error)
-	UpdatePostgresConfig(ctx context.Context, host string, port int, user string, password string, dbname string) (*model.PostgresConfig, error)
 }
 type QueryResolver interface {
 	Zendeskconfig(ctx context.Context) (*model.ZendeskConfig, error)
 	Slackconfig(ctx context.Context) (*model.SlackConfig, error)
-	Postgresconfig(ctx context.Context) (*model.PostgresConfig, error)
 }
 
 type executableSchema struct {
@@ -100,18 +88,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
-
-	case "Mutation.updatePostgresConfig":
-		if e.complexity.Mutation.UpdatePostgresConfig == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_updatePostgresConfig_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UpdatePostgresConfig(childComplexity, args["host"].(string), args["port"].(int), args["user"].(string), args["password"].(string), args["dbname"].(string)), true
 
 	case "Mutation.updateSlackConfig":
 		if e.complexity.Mutation.UpdateSlackConfig == nil {
@@ -136,48 +112,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateZendeskConfig(childComplexity, args["user"].(string), args["apikey"].(string), args["url"].(string)), true
-
-	case "PostgresConfig.dbname":
-		if e.complexity.PostgresConfig.Dbname == nil {
-			break
-		}
-
-		return e.complexity.PostgresConfig.Dbname(childComplexity), true
-
-	case "PostgresConfig.host":
-		if e.complexity.PostgresConfig.Host == nil {
-			break
-		}
-
-		return e.complexity.PostgresConfig.Host(childComplexity), true
-
-	case "PostgresConfig.password":
-		if e.complexity.PostgresConfig.Password == nil {
-			break
-		}
-
-		return e.complexity.PostgresConfig.Password(childComplexity), true
-
-	case "PostgresConfig.port":
-		if e.complexity.PostgresConfig.Port == nil {
-			break
-		}
-
-		return e.complexity.PostgresConfig.Port(childComplexity), true
-
-	case "PostgresConfig.user":
-		if e.complexity.PostgresConfig.User == nil {
-			break
-		}
-
-		return e.complexity.PostgresConfig.User(childComplexity), true
-
-	case "Query.postgresconfig":
-		if e.complexity.Query.Postgresconfig == nil {
-			break
-		}
-
-		return e.complexity.Query.Postgresconfig(childComplexity), true
 
 	case "Query.slackconfig":
 		if e.complexity.Query.Slackconfig == nil {
@@ -293,12 +227,10 @@ var parsedSchema = gqlparser.MustLoadSchema(
 	&ast.Source{Name: "schema.graphql", Input: `type Query {
     zendeskconfig: ZendeskConfig!
     slackconfig: SlackConfig!
-    postgresconfig: PostgresConfig!
 }
 type Mutation {
     updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
     updateSlackConfig(apikey:String!,channel:String!): SlackConfig!
-    updatePostgresConfig(host:String!,port:Int!,user:String!,password:String!,dbname:String!): PostgresConfig!
 }
 
 type ZendeskConfig {
@@ -310,66 +242,12 @@ type ZendeskConfig {
 type SlackConfig {
     apikey: String!
     channel: String!
-}
-
-type PostgresConfig {
-    host: String!
-    port: Int!
-    user: String!
-    password: String!
-    dbname: String!
 }`},
 )
 
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
-
-func (ec *executionContext) field_Mutation_updatePostgresConfig_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["host"]; ok {
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["host"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["port"]; ok {
-		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["port"] = arg1
-	var arg2 string
-	if tmp, ok := rawArgs["user"]; ok {
-		arg2, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["user"] = arg2
-	var arg3 string
-	if tmp, ok := rawArgs["password"]; ok {
-		arg3, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["password"] = arg3
-	var arg4 string
-	if tmp, ok := rawArgs["dbname"]; ok {
-		arg4, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["dbname"] = arg4
-	return args, nil
-}
 
 func (ec *executionContext) field_Mutation_updateSlackConfig_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -561,235 +439,6 @@ func (ec *executionContext) _Mutation_updateSlackConfig(ctx context.Context, fie
 	return ec.marshalNSlackConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSlackConfig(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_updatePostgresConfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_updatePostgresConfig_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	rctx.Args = args
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdatePostgresConfig(rctx, args["host"].(string), args["port"].(int), args["user"].(string), args["password"].(string), args["dbname"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.PostgresConfig)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNPostgresConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐPostgresConfig(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _PostgresConfig_host(ctx context.Context, field graphql.CollectedField, obj *model.PostgresConfig) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "PostgresConfig",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Host, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _PostgresConfig_port(ctx context.Context, field graphql.CollectedField, obj *model.PostgresConfig) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "PostgresConfig",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Port, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _PostgresConfig_user(ctx context.Context, field graphql.CollectedField, obj *model.PostgresConfig) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "PostgresConfig",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.User, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _PostgresConfig_password(ctx context.Context, field graphql.CollectedField, obj *model.PostgresConfig) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "PostgresConfig",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Password, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _PostgresConfig_dbname(ctx context.Context, field graphql.CollectedField, obj *model.PostgresConfig) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "PostgresConfig",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Dbname, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Query_zendeskconfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -862,43 +511,6 @@ func (ec *executionContext) _Query_slackconfig(ctx context.Context, field graphq
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNSlackConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSlackConfig(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_postgresconfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Postgresconfig(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.PostgresConfig)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNPostgresConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐPostgresConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2345,58 +1957,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updatePostgresConfig":
-			out.Values[i] = ec._Mutation_updatePostgresConfig(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var postgresConfigImplementors = []string{"PostgresConfig"}
-
-func (ec *executionContext) _PostgresConfig(ctx context.Context, sel ast.SelectionSet, obj *model.PostgresConfig) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.RequestContext, sel, postgresConfigImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("PostgresConfig")
-		case "host":
-			out.Values[i] = ec._PostgresConfig_host(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "port":
-			out.Values[i] = ec._PostgresConfig_port(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "user":
-			out.Values[i] = ec._PostgresConfig_user(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "password":
-			out.Values[i] = ec._PostgresConfig_password(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "dbname":
-			out.Values[i] = ec._PostgresConfig_dbname(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2446,20 +2006,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_slackconfig(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
-		case "postgresconfig":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_postgresconfig(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -2806,34 +2352,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
-	return graphql.UnmarshalInt(v)
-}
-
-func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	res := graphql.MarshalInt(v)
-	if res == graphql.Null {
-		if !ec.HasError(graphql.GetResolverContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-	}
-	return res
-}
-
-func (ec *executionContext) marshalNPostgresConfig2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐPostgresConfig(ctx context.Context, sel ast.SelectionSet, v model.PostgresConfig) graphql.Marshaler {
-	return ec._PostgresConfig(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNPostgresConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐPostgresConfig(ctx context.Context, sel ast.SelectionSet, v *model.PostgresConfig) graphql.Marshaler {
-	if v == nil {
-		if !ec.HasError(graphql.GetResolverContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._PostgresConfig(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNSlackConfig2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSlackConfig(ctx context.Context, sel ast.SelectionSet, v model.SlackConfig) graphql.Marshaler {

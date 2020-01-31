@@ -28,10 +28,21 @@ func (r *queryResolver) Zendeskconfig(ctx context.Context) (*model.ZendeskConfig
 	return zenconfig, nil
 }
 func (r *queryResolver) Slackconfig(ctx context.Context) (*model.SlackConfig, error) {
-	panic("not implemented")
-}
-func (r *queryResolver) Postgresconfig(ctx context.Context) (*model.PostgresConfig, error) {
-	panic("not implemented")
+	con, err := db.Query(`SELECT slack_channel, slack_apikey FROM config`)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	var slackCon *model.SlackConfig
+	for con.Next() {
+		var channel, apikey string
+		err = con.Scan(&channel, &apikey)
+		if err != nil {
+			panic(err.Error())
+		}
+		slackCon = &model.SlackConfig{Channel: channel, Apikey: apikey}
+	}
+	defer db.Close()
+	return slackCon, nil
 }
 
 // ***** UPDATE (PUT) config functions ***** //
@@ -50,8 +61,5 @@ func (r *mutationResolver) UpdateZendeskConfig(ctx context.Context, user string,
 
 }
 func (r *mutationResolver) UpdateSlackConfig(ctx context.Context, apikey string, channel string) (*model.SlackConfig, error) {
-	panic("not implemented")
-}
-func (r *mutationResolver) UpdatePostgresConfig(ctx context.Context, host string, port int, user string, password string, dbname string) (*model.PostgresConfig, error) {
 	panic("not implemented")
 }
