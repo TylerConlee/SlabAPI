@@ -27,23 +27,6 @@ func (r *queryResolver) Zendeskconfig(ctx context.Context) (*model.ZendeskConfig
 	defer db.Close()
 	return zenconfig, nil
 }
-func (r *queryResolver) Slackconfig(ctx context.Context) (*model.SlackConfig, error) {
-	con, err := db.Query(`SELECT slack_channel, slack_apikey FROM config`)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	var slackCon *model.SlackConfig
-	for con.Next() {
-		var channel, apikey string
-		err = con.Scan(&channel, &apikey)
-		if err != nil {
-			panic(err.Error())
-		}
-		slackCon = &model.SlackConfig{Channel: channel, Apikey: apikey}
-	}
-	defer db.Close()
-	return slackCon, nil
-}
 
 // ***** UPDATE (PUT) config functions ***** //
 
@@ -59,16 +42,4 @@ func (r *mutationResolver) UpdateZendeskConfig(ctx context.Context, user string,
 	defer db.Close()
 	return &result, err
 
-}
-func (r *mutationResolver) UpdateSlackConfig(ctx context.Context, apikey string, channel string) (*model.SlackConfig, error) {
-	var result model.SlackConfig
-
-	conf, err := db.Prepare("UPDATE config SET slack_channel = $1, slack_apikey = $2")
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	conf.Exec(channel, apikey)
-	result = model.SlackConfig{Channel: channel, Apikey: apikey}
-	defer db.Close()
-	return &result, err
 }

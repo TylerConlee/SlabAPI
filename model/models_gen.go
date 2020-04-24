@@ -2,11 +2,6 @@
 
 package model
 
-type SlackConfig struct {
-	Apikey  string `json:"apikey"`
-	Channel string `json:"channel"`
-}
-
 type ZendeskConfig struct {
 	User   string `json:"user"`
 	Apikey string `json:"apikey"`

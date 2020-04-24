@@ -44,18 +44,11 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		UpdateSlackConfig   func(childComplexity int, apikey string, channel string) int
 		UpdateZendeskConfig func(childComplexity int, user string, apikey string, url string) int
 	}
 
 	Query struct {
-		Slackconfig   func(childComplexity int) int
 		Zendeskconfig func(childComplexity int) int
-	}
-
-	SlackConfig struct {
-		Apikey  func(childComplexity int) int
-		Channel func(childComplexity int) int
 	}
 
 	ZendeskConfig struct {
@@ -67,11 +60,9 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	UpdateZendeskConfig(ctx context.Context, user string, apikey string, url string) (*model.ZendeskConfig, error)
-	UpdateSlackConfig(ctx context.Context, apikey string, channel string) (*model.SlackConfig, error)
 }
 type QueryResolver interface {
 	Zendeskconfig(ctx context.Context) (*model.ZendeskConfig, error)
-	Slackconfig(ctx context.Context) (*model.SlackConfig, error)
 }
 
 type executableSchema struct {
@@ -89,18 +80,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Mutation.updateSlackConfig":
-		if e.complexity.Mutation.UpdateSlackConfig == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_updateSlackConfig_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UpdateSlackConfig(childComplexity, args["apikey"].(string), args["channel"].(string)), true
-
 	case "Mutation.updateZendeskConfig":
 		if e.complexity.Mutation.UpdateZendeskConfig == nil {
 			break
@@ -113,33 +92,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateZendeskConfig(childComplexity, args["user"].(string), args["apikey"].(string), args["url"].(string)), true
 
-	case "Query.slackconfig":
-		if e.complexity.Query.Slackconfig == nil {
-			break
-		}
-
-		return e.complexity.Query.Slackconfig(childComplexity), true
-
 	case "Query.zendeskconfig":
 		if e.complexity.Query.Zendeskconfig == nil {
 			break
 		}
 
 		return e.complexity.Query.Zendeskconfig(childComplexity), true
-
-	case "SlackConfig.apikey":
-		if e.complexity.SlackConfig.Apikey == nil {
-			break
-		}
-
-		return e.complexity.SlackConfig.Apikey(childComplexity), true
-
-	case "SlackConfig.channel":
-		if e.complexity.SlackConfig.Channel == nil {
-			break
-		}
-
-		return e.complexity.SlackConfig.Channel(childComplexity), true
 
 	case "ZendeskConfig.apikey":
 		if e.complexity.ZendeskConfig.Apikey == nil {
@@ -226,11 +184,9 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 var parsedSchema = gqlparser.MustLoadSchema(
 	&ast.Source{Name: "schema.graphql", Input: `type Query {
     zendeskconfig: ZendeskConfig!
-    slackconfig: SlackConfig!
 }
 type Mutation {
     updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
-    updateSlackConfig(apikey:String!,channel:String!): SlackConfig!
 }
 
 type ZendeskConfig {
@@ -238,38 +194,12 @@ type ZendeskConfig {
     apikey: String!
     url: String!
 }
-
-type SlackConfig {
-    apikey: String!
-    channel: String!
-}`},
+`},
 )
 
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
-
-func (ec *executionContext) field_Mutation_updateSlackConfig_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["apikey"]; ok {
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["apikey"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["channel"]; ok {
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["channel"] = arg1
-	return args, nil
-}
 
 func (ec *executionContext) field_Mutation_updateZendeskConfig_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -395,50 +325,6 @@ func (ec *executionContext) _Mutation_updateZendeskConfig(ctx context.Context, f
 	return ec.marshalNZendeskConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfig(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_updateSlackConfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_updateSlackConfig_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	rctx.Args = args
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateSlackConfig(rctx, args["apikey"].(string), args["channel"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.SlackConfig)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNSlackConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSlackConfig(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Query_zendeskconfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -474,43 +360,6 @@ func (ec *executionContext) _Query_zendeskconfig(ctx context.Context, field grap
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNZendeskConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfig(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_slackconfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Query",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Slackconfig(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.SlackConfig)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNSlackConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSlackConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -586,80 +435,6 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _SlackConfig_apikey(ctx context.Context, field graphql.CollectedField, obj *model.SlackConfig) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "SlackConfig",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Apikey, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _SlackConfig_channel(ctx context.Context, field graphql.CollectedField, obj *model.SlackConfig) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "SlackConfig",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Channel, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _ZendeskConfig_user(ctx context.Context, field graphql.CollectedField, obj *model.ZendeskConfig) (ret graphql.Marshaler) {
@@ -1952,11 +1727,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updateSlackConfig":
-			out.Values[i] = ec._Mutation_updateSlackConfig(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -1997,56 +1767,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
-		case "slackconfig":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_slackconfig(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
 			out.Values[i] = ec._Query___schema(ctx, field)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var slackConfigImplementors = []string{"SlackConfig"}
-
-func (ec *executionContext) _SlackConfig(ctx context.Context, sel ast.SelectionSet, obj *model.SlackConfig) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.RequestContext, sel, slackConfigImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("SlackConfig")
-		case "apikey":
-			out.Values[i] = ec._SlackConfig_apikey(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "channel":
-			out.Values[i] = ec._SlackConfig_channel(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2352,20 +2076,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) marshalNSlackConfig2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSlackConfig(ctx context.Context, sel ast.SelectionSet, v model.SlackConfig) graphql.Marshaler {
-	return ec._SlackConfig(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNSlackConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSlackConfig(ctx context.Context, sel ast.SelectionSet, v *model.SlackConfig) graphql.Marshaler {
-	if v == nil {
-		if !ec.HasError(graphql.GetResolverContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._SlackConfig(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

@@ -1,19 +1,12 @@
 type Query {
     zendeskconfig: ZendeskConfig!
-    slackconfig: SlackConfig!
 }
 type Mutation {
     updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
-    updateSlackConfig(apikey:String!,channel:String!): SlackConfig!
 }
 
 type ZendeskConfig {
     user: String!
     apikey: String!
     url: String!
-}
-
-type SlackConfig {
-    apikey: String!
-    channel: String!
 }

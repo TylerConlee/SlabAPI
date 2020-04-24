@@ -1,5 +1,6 @@
 package resolver
 
+//go:generate go run github.com/99designs/gqlgen
 import (
 	"github.com/tylerconlee/SlabAPI/datastore"
 	"github.com/tylerconlee/SlabAPI/graph"
