@@ -1,0 +1,12 @@
+type Query {
+    zendeskconfig: ZendeskConfig!
+}
+type Mutation {
+    updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
+}
+
+type ZendeskConfig {
+    user: String!
+    apikey: String!
+    url: String!
+}
