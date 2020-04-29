@@ -15,11 +15,11 @@ type Ticket struct {
 	URL            string         `json:"URL"`
 	ID             int            `json:"ID"`
 	CreatedAt      string         `json:"CreatedAt"`
-	UpdatedAt      *string        `json:"UpdatedAt"`
-	Subject        *string        `json:"Subject"`
-	Description    *string        `json:"Description"`
-	Priority       *string        `json:"Priority"`
-	Status         *string        `json:"Status"`
+	UpdatedAt      string         `json:"UpdatedAt"`
+	Subject        string         `json:"Subject"`
+	Description    string         `json:"Description"`
+	Priority       string         `json:"Priority"`
+	Status         string         `json:"Status"`
 	RequesterID    *int           `json:"RequesterID"`
 	OrganizationID *int           `json:"OrganizationID"`
 	GroupID        *int           `json:"GroupID"`

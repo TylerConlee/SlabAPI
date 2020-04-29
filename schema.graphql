@@ -27,11 +27,11 @@ type Ticket {
     URL: String!
     ID: Int!
     CreatedAt: String!
-    UpdatedAt: String
-    Subject: String
-    Description: String
-    Priority: String
-    Status: String
+    UpdatedAt: String!
+    Subject: String!
+    Description: String!
+    Priority: String!
+    Status: String!
     RequesterID: Int
     OrganizationID: Int
     GroupID: Int
