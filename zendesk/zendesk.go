@@ -2,7 +2,9 @@ package zendesk
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/nukosuke/go-zendesk/zendesk"
 	"github.com/tylerconlee/SlabAPI/model"
@@ -39,43 +41,51 @@ func Connect(config *model.ZendeskConfigInput) *Client {
 // updated. Once it grabs the array of tickets, it makes sure that any
 // pagination is handled, and converts the ticket output into an array of model.Ticket.
 func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err error) {
-	// Sort by most recent tickest first
-	opts := &zendesk.TicketListOptions{SortBy: "updated_at"}
+	// Initialize first page
+	pageNum := 1
+	var tickets []zendesk.Ticket
+	// Loop through all pages of API response
+	for {
+		// Send a request to Zendesk with the specified page number and
+		// sort by the most recently updated ticket
+		t, page, err := c.client.GetTickets(context.Background(), &zendesk.TicketListOptions{
+			PageOptions: zendesk.PageOptions{
+				Page: pageNum,
+			},
+			SortBy: "updated_at",
+		})
 
-	// Check to make sure Zendesk Client is active
-	if c.client != nil {
-
-		// Make the request to the Zendesk API to get all tickets
-		tickets, page, err := c.client.GetTickets(ctx, opts)
-		// If there are additional pages, retrieve those next.
-		if page.HasNext() {
-
-		}
-		// Handle any errors from the request to Zendesk
 		if err != nil {
-			log.Printf("Error detected while getting tickets: %s", err)
+			fmt.Errorf("[E] %v", err)
+			os.Exit(1)
 		}
-		// Take the []zendesk.Ticket returned from the Zendesk wrapper
-		// and turn it into the []*model.Ticket used in Slab
-		for _, ticket := range tickets {
-			save := &model.Ticket{
-				URL:            ticket.URL,
-				ID:             int(ticket.ID),
-				CreatedAt:      ticket.CreatedAt.String(),
-				UpdatedAt:      ticket.UpdatedAt.String(),
-				Subject:        ticket.Subject,
-				Description:    ticket.Description,
-				Priority:       ticket.Priority,
-				Status:         ticket.Status,
-				RequesterID:    int(ticket.RequesterID),
-				OrganizationID: int(ticket.OrganizationID),
-				GroupID:        int(ticket.GroupID),
-				Tags:           ticket.Tags,
-			}
-			output = append(output, save)
+
+		tickets = append(tickets, t...)
+
+		if !page.HasNext() {
+			break
 		}
-	} else {
-		log.Print(c)
+
+		pageNum = pageNum + 1
+	}
+	// Take the []zendesk.Ticket returned from the Zendesk wrapper
+	// and turn it into the []*model.Ticket used in Slab
+	for _, ticket := range tickets {
+		save := &model.Ticket{
+			URL:            ticket.URL,
+			ID:             int(ticket.ID),
+			CreatedAt:      ticket.CreatedAt.String(),
+			UpdatedAt:      ticket.UpdatedAt.String(),
+			Subject:        ticket.Subject,
+			Description:    ticket.Description,
+			Priority:       ticket.Priority,
+			Status:         ticket.Status,
+			RequesterID:    int(ticket.RequesterID),
+			OrganizationID: int(ticket.OrganizationID),
+			GroupID:        int(ticket.GroupID),
+			Tags:           ticket.Tags,
+		}
+		output = append(output, save)
 	}
 	return
 }
