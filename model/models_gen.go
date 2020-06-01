@@ -20,17 +20,17 @@ type Ticket struct {
 	Description    string         `json:"Description"`
 	Priority       string         `json:"Priority"`
 	Status         string         `json:"Status"`
-	RequesterID    *int           `json:"RequesterID"`
-	OrganizationID *int           `json:"OrganizationID"`
-	GroupID        *int           `json:"GroupID"`
-	Tags           []*string      `json:"Tags"`
+	RequesterID    int            `json:"RequesterID"`
+	OrganizationID int            `json:"OrganizationID"`
+	GroupID        int            `json:"GroupID"`
+	Tags           []string       `json:"Tags"`
 	CustomFields   []*CustomField `json:"CustomFields"`
 	SLA            []*SLA         `json:"SLA"`
 }
 
 type Tickets struct {
 	Tickets []*Ticket `json:"Tickets"`
-	Count   *int      `json:"Count"`
+	Count   int       `json:"Count"`
 }
 
 type ZendeskConfig struct {

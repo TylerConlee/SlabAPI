@@ -20,7 +20,7 @@ input ZendeskConfigInput {
 
 type Tickets {
     Tickets: [Ticket!]!
-    Count: Int
+    Count: Int!
 }
 
 type Ticket {
@@ -32,10 +32,10 @@ type Ticket {
     Description: String!
     Priority: String!
     Status: String!
-    RequesterID: Int
-    OrganizationID: Int
-    GroupID: Int
-    Tags: [String]
+    RequesterID: Int!
+    OrganizationID: Int!
+    GroupID: Int!
+    Tags: [String!]
     CustomFields: [CustomField]
     SLA: [SLA]  
 }
