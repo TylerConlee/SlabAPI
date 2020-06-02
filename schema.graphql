@@ -1,5 +1,6 @@
 type Query {
     zendeskconfig: ZendeskConfig!
+    getAllTickets(config:ZendeskConfigInput!): Tickets!
 }
 type Mutation {
     updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
@@ -9,4 +10,41 @@ type ZendeskConfig {
     user: String!
     apikey: String!
     url: String!
+}
+
+input ZendeskConfigInput {
+    user: String!
+    apikey: String!
+    url: String!
+}
+
+type Tickets {
+    Tickets: [Ticket!]!
+    Count: Int!
+}
+
+type Ticket {
+    URL: String!
+    ID: Int!
+    CreatedAt: String!
+    UpdatedAt: String!
+    Subject: String!
+    Description: String!
+    Priority: String!
+    Status: String!
+    RequesterID: Int!
+    OrganizationID: Int!
+    GroupID: Int!
+    Tags: [String!]
+    CustomFields: [CustomField]
+    SLA: [SLA]  
+}
+
+type CustomField {
+    ID: Int
+    Value: String
+}
+
+type SLA {
+    PolicyMetrics: [String]
 }

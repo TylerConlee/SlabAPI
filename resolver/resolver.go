@@ -7,7 +7,9 @@ import (
 )
 
 // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
-var db *datastore.Db
+var (
+	db *datastore.Db
+)
 
 // Resolver references a generic resolution to a query made against the API
 type Resolver struct{}
@@ -25,6 +27,7 @@ func (r *Resolver) Query() graph.QueryResolver {
 	db, _ = datastore.New(
 		datastore.ConnString(),
 	)
+
 	return &queryResolver{r}
 }
 

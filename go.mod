@@ -13,6 +13,7 @@ require (
 	github.com/namsral/flag v1.7.4-pre
 	github.com/newrelic/go-agent/v3 v3.0.0
 	github.com/newrelic/go-agent/v3/integrations/nrgorilla v1.0.0
+	github.com/nukosuke/go-zendesk v0.7.3
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/urfave/cli v1.22.2 // indirect
 	github.com/vektah/dataloaden v0.3.0 // indirect

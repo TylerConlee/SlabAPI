@@ -2,7 +2,44 @@
 
 package model
 
+type CustomField struct {
+	ID    *int    `json:"ID"`
+	Value *string `json:"Value"`
+}
+
+type SLA struct {
+	PolicyMetrics []*string `json:"PolicyMetrics"`
+}
+
+type Ticket struct {
+	URL            string         `json:"URL"`
+	ID             int            `json:"ID"`
+	CreatedAt      string         `json:"CreatedAt"`
+	UpdatedAt      string         `json:"UpdatedAt"`
+	Subject        string         `json:"Subject"`
+	Description    string         `json:"Description"`
+	Priority       string         `json:"Priority"`
+	Status         string         `json:"Status"`
+	RequesterID    int            `json:"RequesterID"`
+	OrganizationID int            `json:"OrganizationID"`
+	GroupID        int            `json:"GroupID"`
+	Tags           []string       `json:"Tags"`
+	CustomFields   []*CustomField `json:"CustomFields"`
+	SLA            []*SLA         `json:"SLA"`
+}
+
+type Tickets struct {
+	Tickets []*Ticket `json:"Tickets"`
+	Count   int       `json:"Count"`
+}
+
 type ZendeskConfig struct {
+	User   string `json:"user"`
+	Apikey string `json:"apikey"`
+	URL    string `json:"url"`
+}
+
+type ZendeskConfigInput struct {
 	User   string `json:"user"`
 	Apikey string `json:"apikey"`
 	URL    string `json:"url"`
