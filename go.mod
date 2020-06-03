@@ -19,7 +19,7 @@ require (
 	github.com/newrelic/go-agent/v3/integrations/nrgorilla v1.1.0
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/tidwall/pretty v1.0.1 // indirect
-	github.com/tylerconlee/zendesk-go v0.0.0-20200603205826-a3ed9dcf46eb
+	github.com/tylerconlee/zendesk-go v0.0.1
 	github.com/vektah/gqlparser/v2 v2.0.1
 	golang.org/x/crypto v0.0.0-20200602180216-279210d13fed // indirect
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect
