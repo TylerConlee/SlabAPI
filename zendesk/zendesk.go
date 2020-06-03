@@ -39,7 +39,8 @@ func Connect(config *model.ZendeskConfigInput) *Client {
 // GetTickets uses the preconfigured client, c, and sends a request for all
 // tickets to the Zendesk API wrapper, asking it to sort tickets by last
 // updated. Once it grabs the array of tickets, it makes sure that any
-// pagination is handled, and converts the ticket output into an array of model.Ticket.
+// pagination is handled, and converts the ticket output into an array of model.
+// Ticket.
 func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err error) {
 	// Initialize first page
 	pageNum := 1
@@ -88,4 +89,12 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 		output = append(output, save)
 	}
 	return
+}
+
+// GetOrganization takes the client, c, and requests the details for the
+// organization provided by the context to the Zendesk API wrapper. Once it
+// retreives that data from Zendesk, it converts the output into a model.
+// Organization.
+func GetOrganization(ctx context.Context) (output *model.Organization, err error) {
+
 }

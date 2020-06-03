@@ -1,6 +1,7 @@
 type Query {
     zendeskconfig: ZendeskConfig!
     getAllTickets(config:ZendeskConfigInput!): Tickets!
+    getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
 }
 type Mutation {
     updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
@@ -47,4 +48,19 @@ type CustomField {
 
 type SLA {
     PolicyMetrics: [String]
+}
+
+type Organization {
+    URL: String!
+	ID: Int! 
+	Name: String! 
+	CreatedAt: String!
+	UpdatedAt: String!
+	DomainNames: [String!]
+	Tags: [String!]
+	OrganizationFields: [OrgFields]
+}
+
+type OrgFields {
+    SLALevel: String!
 }

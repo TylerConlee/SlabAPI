@@ -7,6 +7,21 @@ type CustomField struct {
 	Value *string `json:"Value"`
 }
 
+type OrgFields struct {
+	SLALevel string `json:"SLALevel"`
+}
+
+type Organization struct {
+	URL                string       `json:"URL"`
+	ID                 int          `json:"ID"`
+	Name               string       `json:"Name"`
+	CreatedAt          string       `json:"CreatedAt"`
+	UpdatedAt          string       `json:"UpdatedAt"`
+	DomainNames        []string     `json:"DomainNames"`
+	Tags               []string     `json:"Tags"`
+	OrganizationFields []*OrgFields `json:"OrganizationFields"`
+}
+
 type SLA struct {
 	PolicyMetrics []*string `json:"PolicyMetrics"`
 }
