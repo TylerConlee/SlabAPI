@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/nukosuke/go-zendesk/zendesk"
 	"github.com/tylerconlee/SlabAPI/model"
+	"github.com/tylerconlee/zendesk-go/zendesk"
 )
 
 // Client contains the instance of the Zendesk API wrapper client from
