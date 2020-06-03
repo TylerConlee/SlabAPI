@@ -95,6 +95,16 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 // organization provided by the context to the Zendesk API wrapper. Once it
 // retreives that data from Zendesk, it converts the output into a model.
 // Organization.
-func GetOrganization(ctx context.Context) (output *model.Organization, err error) {
-
+func (c *Client) GetOrganization(ctx context.Context, id int) (output *model.Organization, err error) {
+	o, err := c.client.GetOrganization(ctx, int64(id))
+	output = &model.Organization{
+		URL:         o.URL,
+		ID:          int(o.ID),
+		Name:        o.Name,
+		CreatedAt:   o.CreatedAt.String(),
+		UpdatedAt:   o.UpdatedAt.String(),
+		DomainNames: o.DomainNames,
+		Tags:        o.Tags,
+	}
+	return
 }
