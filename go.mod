@@ -17,6 +17,7 @@ require (
 	github.com/namsral/flag v1.7.4-pre
 	github.com/newrelic/go-agent/v3 v3.5.0
 	github.com/newrelic/go-agent/v3/integrations/nrgorilla v1.1.0
+	github.com/newrelic/go-agent/v3/integrations/nrgraphqlgo v1.0.0 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/tidwall/pretty v1.0.1 // indirect
 	github.com/tylerconlee/zendesk-go v0.0.1
