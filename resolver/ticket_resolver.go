@@ -30,8 +30,8 @@ func (r *queryResolver) GetAllTickets(ctx context.Context, config model.ZendeskC
 // ***** GET organization functions ***** //
 // GetOrganization takes the ZendeskConfig object of username, APIkey and URL,
 // as well as an organization ID and makes a request to Zendesk to the /
-// organization.json endpoint. This returns the information related to that 
-// organization. 
+// organization.json endpoint. This returns the information related to that
+// organization.
 func (r *queryResolver) GetOrganization(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.Organization, error) {
 	c = zendesk.Connect(&config)
 	org, err := c.GetOrganization(ctx, id)

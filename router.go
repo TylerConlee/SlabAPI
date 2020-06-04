@@ -7,6 +7,7 @@ import (
 	"github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/mux"
 	"github.com/newrelic/go-agent/v3/integrations/nrgorilla"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/tylerconlee/SlabAPI/graph"
 	"github.com/tylerconlee/SlabAPI/resolver"
 )
@@ -19,7 +20,7 @@ func NewRouter() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", IndexRouter)
 	r.HandleFunc("/graphql", handler.Playground("GraphQL playground", "/query"))
-	r.HandleFunc("/query", handler.GraphQL(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}})))
+	r.HandleFunc(newrelic.WrapHandleFunc(nrApp, "/query", handler.GraphQL(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}}))))
 	http.ListenAndServe(":8000", nrgorilla.InstrumentRoutes(r, nrApp))
 }
 

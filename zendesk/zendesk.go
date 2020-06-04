@@ -2,12 +2,14 @@ package zendesk
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"strconv"
+	"time"
 
-	"github.com/nukosuke/go-zendesk/zendesk"
 	"github.com/tylerconlee/SlabAPI/model"
+	"github.com/tylerconlee/zendesk-go/zendesk"
 )
 
 // Client contains the instance of the Zendesk API wrapper client from
@@ -26,7 +28,15 @@ func Connect(config *model.ZendeskConfigInput) *Client {
 	var err error
 	// c is the instance of a Client that gets used for all functions.
 	c := &Client{config: config}
-	c.client, err = zendesk.NewClient(nil)
+	client := http.Client{
+		Timeout: time.Second * 480,
+		Transport: &http.Transport{
+			MaxIdleConns:       10,
+			IdleConnTimeout:    30 * time.Second,
+			DisableCompression: true,
+		},
+	}
+	c.client, err = zendesk.NewClient(&client)
 	if err != nil {
 
 	}
@@ -42,32 +52,30 @@ func Connect(config *model.ZendeskConfigInput) *Client {
 // pagination is handled, and converts the ticket output into an array of model.
 // Ticket.
 func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err error) {
+	t := time.Now().AddDate(0, 0, -5).Unix()
 	// Initialize first page
-	pageNum := 1
+	opts := zendesk.TicketListOptions{
+		StartTime: strconv.Itoa(int(t)),
+	}
 	var tickets []zendesk.Ticket
 	// Loop through all pages of API response
 	for {
+
 		// Send a request to Zendesk with the specified page number and
 		// sort by the most recently updated ticket
-		t, page, err := c.client.GetTickets(context.Background(), &zendesk.TicketListOptions{
-			PageOptions: zendesk.PageOptions{
-				Page: pageNum,
-			},
-			SortBy: "updated_at",
-		})
+		t, _, eos, err := c.client.GetIncrementalTickets(context.Background(), &opts)
 
 		if err != nil {
-			fmt.Errorf("[E] %v", err)
+			log.Printf("[E] %v", err)
 			os.Exit(1)
 		}
 
 		tickets = append(tickets, t...)
 
-		if !page.HasNext() {
+		if !eos {
 			break
 		}
 
-		pageNum = pageNum + 1
 	}
 	// Take the []zendesk.Ticket returned from the Zendesk wrapper
 	// and turn it into the []*model.Ticket used in Slab
