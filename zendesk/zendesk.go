@@ -1,7 +1,6 @@
 package zendesk
 
 import (
-	"context"
 	"log"
 	"net/http"
 	"time"
@@ -42,22 +41,4 @@ func Connect(config *model.ZendeskConfigInput) *Client {
 	c.client.SetCredential(zendesk.NewAPITokenCredential(config.User, config.Apikey))
 	log.Print("Zendesk credentials set. Client successfully created")
 	return c
-}
-
-// GetOrganization takes the client, c, and requests the details for the
-// organization provided by the context to the Zendesk API wrapper. Once it
-// retreives that data from Zendesk, it converts the output into a model.
-// Organization.
-func (c *Client) GetOrganization(ctx context.Context, id int) (output *model.Organization, err error) {
-	o, err := c.client.GetOrganization(ctx, int64(id))
-	output = &model.Organization{
-		URL:         o.URL,
-		ID:          int(o.ID),
-		Name:        o.Name,
-		CreatedAt:   o.CreatedAt.String(),
-		UpdatedAt:   o.UpdatedAt.String(),
-		DomainNames: o.DomainNames,
-		Tags:        o.Tags,
-	}
-	return
 }
