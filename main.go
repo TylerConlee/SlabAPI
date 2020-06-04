@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	logger "github.com/tylerconlee/SlabAPI/log"
+
 	"github.com/namsral/flag"
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
@@ -12,6 +14,8 @@ var (
 	nrConfig string
 
 	nrApp *newrelic.Application
+
+	log = logger.Log
 )
 
 func main() {
@@ -19,7 +23,7 @@ func main() {
 	flag.Parse()
 	hostname, err := os.Hostname()
 	if err != nil {
-
+		log.Fatal()
 	}
 	if nrConfig != "" {
 		appname := fmt.Sprintf("slabAPI %s", hostname)
@@ -31,6 +35,5 @@ func main() {
 
 		}
 	}
-
 	NewRouter()
 }
