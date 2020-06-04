@@ -19,6 +19,7 @@ var (
 )
 
 func main() {
+	log.Info("opeNotify - Zendesk Assistant by Tyler Conlee", nil)
 	flag.StringVar(&nrConfig, "newrelic", "", "New Relic configuration key")
 	flag.Parse()
 	hostname, err := os.Hostname()

@@ -12,7 +12,8 @@ var Log *Logger
 
 func init() {
 	var err error
-	Log.e, err = zap.NewProduction()
+	l, err := zap.NewProduction()
+	Log = &Logger{l}
 
 	if err != nil {
 		os.Exit(1)
