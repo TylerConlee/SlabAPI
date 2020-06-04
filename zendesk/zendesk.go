@@ -3,6 +3,7 @@ package zendesk
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -27,7 +28,15 @@ func Connect(config *model.ZendeskConfigInput) *Client {
 	var err error
 	// c is the instance of a Client that gets used for all functions.
 	c := &Client{config: config}
-	c.client, err = zendesk.NewClient(nil)
+	client := http.Client{
+		Timeout: time.Second * 480,
+		Transport: &http.Transport{
+			MaxIdleConns:       10,
+			IdleConnTimeout:    30 * time.Second,
+			DisableCompression: true,
+		},
+	}
+	c.client, err = zendesk.NewClient(&client)
 	if err != nil {
 
 	}
