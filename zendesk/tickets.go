@@ -2,13 +2,12 @@ package zendesk
 
 import (
 	"context"
-	"log"
-	"os"
 	"strconv"
 	"time"
 
 	"github.com/tylerconlee/SlabAPI/model"
 	"github.com/tylerconlee/zendesk-go/zendesk"
+	"go.uber.org/zap"
 )
 
 // GetTickets uses the preconfigured client, c, and sends a request for all
@@ -17,12 +16,15 @@ import (
 // pagination is handled, and converts the ticket output into an array of model.
 // Ticket.
 func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err error) {
+
 	t := time.Now().AddDate(0, 0, -5).Unix()
 	// Initialize first page
 	opts := zendesk.TicketListOptions{
 		StartTime: strconv.Itoa(int(t)),
 	}
+
 	var tickets []zendesk.Ticket
+	log.Debug("Beginning GetTickets loop")
 	// Loop through all pages of API response
 	for {
 
@@ -31,13 +33,13 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 		t, _, eos, err := c.client.GetIncrementalTickets(context.Background(), &opts)
 
 		if err != nil {
-			log.Printf("[E] %v", err)
-			os.Exit(1)
+			log.Fatal("Fatal error", zap.String("Error", err.Error()))
 		}
-
+		log.Debug("Retrieved tickets from Zendesk in GetTickets loop", zap.Int("ticket_count", len(t)), zap.Int("total_count", len(tickets)))
 		tickets = append(tickets, t...)
 
 		if !eos {
+			log.Debug("Reached end of GetTickets loop", zap.Int("total_count", len(tickets)))
 			break
 		}
 

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	logger "github.com/tylerconlee/SlabAPI/log"
+
 	// postgres driver
 	_ "github.com/lib/pq"
 )
@@ -12,6 +14,10 @@ import (
 // checkTables is a boolean that's set when the app is first ran
 // to determine if Postgres should attempt to add tables to the database
 var checkTables bool = false
+
+var (
+	log = logger.Log
+)
 
 // Db is our database struct used for interacting with the database
 type Db struct {
