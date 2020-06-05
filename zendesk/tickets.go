@@ -7,6 +7,7 @@ import (
 
 	"github.com/tylerconlee/SlabAPI/model"
 	"github.com/tylerconlee/zendesk-go/zendesk"
+	"go.uber.org/ratelimit"
 	"go.uber.org/zap"
 )
 
@@ -25,9 +26,10 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 
 	var tickets []zendesk.Ticket
 	log.Debug("Beginning GetTickets loop")
+	rl := ratelimit.New(6, ratelimit.Per(time.Minute))
 	// Loop through all pages of API response
 	for {
-
+		rl.Take()
 		// Send a request to Zendesk with the specified page number and
 		// sort by the most recently updated ticket
 		t, _, eos, err := c.client.GetIncrementalTickets(context.Background(), &opts)
@@ -38,7 +40,7 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 		log.Debug("Retrieved tickets from Zendesk in GetTickets loop", zap.Int("ticket_count", len(t)), zap.Int("total_count", len(tickets)))
 		tickets = append(tickets, t...)
 
-		if !eos {
+		if eos {
 			log.Debug("Reached end of GetTickets loop", zap.Int("total_count", len(tickets)))
 			break
 		}

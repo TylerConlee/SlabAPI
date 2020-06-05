@@ -20,11 +20,12 @@ require (
 	github.com/newrelic/go-agent/v3/integrations/nrgorilla v1.1.0
 	github.com/newrelic/go-agent/v3/integrations/nrgraphqlgo v1.0.0 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
-	github.com/sirupsen/logrus v1.6.0
+	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/tidwall/pretty v1.0.1 // indirect
 	github.com/tylerconlee/slab v0.0.0-20200428212657-5eac97be730c
 	github.com/tylerconlee/zendesk-go v0.0.1
 	github.com/vektah/gqlparser/v2 v2.0.1
+	go.uber.org/ratelimit v0.1.1-0.20191205214636-7895686c0825
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200602180216-279210d13fed // indirect
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect
