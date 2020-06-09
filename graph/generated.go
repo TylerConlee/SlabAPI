@@ -73,10 +73,6 @@ type ComplexityRoot struct {
 		Zendeskconfig   func(childComplexity int) int
 	}
 
-	SLA struct {
-		PolicyMetrics func(childComplexity int) int
-	}
-
 	Ticket struct {
 		CreatedAt      func(childComplexity int) int
 		CustomFields   func(childComplexity int) int
@@ -249,13 +245,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Zendeskconfig(childComplexity), true
-
-	case "SLA.PolicyMetrics":
-		if e.complexity.SLA.PolicyMetrics == nil {
-			break
-		}
-
-		return e.complexity.SLA.PolicyMetrics(childComplexity), true
 
 	case "Ticket.CreatedAt":
 		if e.complexity.Ticket.CreatedAt == nil {
@@ -494,7 +483,7 @@ type Ticket {
     GroupID: Int!
     Tags: [String!]
     CustomFields: [CustomField]
-    SLA: [SLA]  
+    SLA: String!
 }
 
 type CustomField {
@@ -502,9 +491,6 @@ type CustomField {
     Value: String
 }
 
-type SLA {
-    PolicyMetrics: [String]
-}
 
 type Organization {
     URL: String!
@@ -519,7 +505,8 @@ type Organization {
 
 type OrgFields {
     SLALevel: String!
-}`, BuiltIn: false},
+}
+`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -1228,37 +1215,6 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _SLA_PolicyMetrics(ctx context.Context, field graphql.CollectedField, obj *model.SLA) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:   "SLA",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PolicyMetrics, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*string)
-	fc.Result = res
-	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Ticket_URL(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1719,11 +1675,14 @@ func (ec *executionContext) _Ticket_SLA(ctx context.Context, field graphql.Colle
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.SLA)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOSLA2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSLA(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Tickets_Tickets(ctx context.Context, field graphql.CollectedField, obj *model.Tickets) (ret graphql.Marshaler) {
@@ -3198,30 +3157,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	return out
 }
 
-var sLAImplementors = []string{"SLA"}
-
-func (ec *executionContext) _SLA(ctx context.Context, sel ast.SelectionSet, obj *model.SLA) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, sLAImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("SLA")
-		case "PolicyMetrics":
-			out.Values[i] = ec._SLA_PolicyMetrics(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var ticketImplementors = []string{"Ticket"}
 
 func (ec *executionContext) _Ticket(ctx context.Context, sel ast.SelectionSet, obj *model.Ticket) graphql.Marshaler {
@@ -3294,6 +3229,9 @@ func (ec *executionContext) _Ticket(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = ec._Ticket_CustomFields(ctx, field, obj)
 		case "SLA":
 			out.Values[i] = ec._Ticket_SLA(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4132,57 +4070,6 @@ func (ec *executionContext) marshalOOrgFields2ᚖgithubᚗcomᚋtylerconleeᚋSl
 	return ec._OrgFields(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOSLA2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSLA(ctx context.Context, sel ast.SelectionSet, v model.SLA) graphql.Marshaler {
-	return ec._SLA(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalOSLA2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSLA(ctx context.Context, sel ast.SelectionSet, v []*model.SLA) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOSLA2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSLA(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
-func (ec *executionContext) marshalOSLA2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐSLA(ctx context.Context, sel ast.SelectionSet, v *model.SLA) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._SLA(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalString(v)
 }
@@ -4218,38 +4105,6 @@ func (ec *executionContext) marshalOString2ᚕstringᚄ(ctx context.Context, sel
 	ret := make(graphql.Array, len(v))
 	for i := range v {
 		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
-	}
-
-	return ret
-}
-
-func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*string, len(vSlice))
-	for i := range vSlice {
-		res[i], err = ec.unmarshalOString2ᚖstring(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOString2ᚕᚖstring(ctx context.Context, sel ast.SelectionSet, v []*string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalOString2ᚖstring(ctx, sel, v[i])
 	}
 
 	return ret

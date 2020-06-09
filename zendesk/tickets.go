@@ -22,6 +22,7 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 	// Initialize first page
 	opts := zendesk.TicketListOptions{
 		StartTime: strconv.Itoa(int(t)),
+		Sideload:  "slas",
 	}
 
 	var tickets []zendesk.Ticket
@@ -42,7 +43,7 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 		opts.StartTime = ""
 		opts.Cursor = cursor
 		if eos {
-			log.Debug("Reached end of GetTickets loop", zap.Int("total_count", len(tickets)))
+			log.Info("Reached end of GetTickets loop", zap.Int("total_count", len(tickets)))
 			break
 		}
 
@@ -50,6 +51,15 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 	// Take the []zendesk.Ticket returned from the Zendesk wrapper
 	// and turn it into the []*model.Ticket used in Slab
 	for _, ticket := range tickets {
+		var sla string
+		if len(ticket.Slas.PolicyMetrics) >= 1 {
+			log.Debug("Policy metrics is longer than 0")
+			p := ticket.Slas.PolicyMetrics[0].(map[string]interface{})
+			if p["breach_at"] != nil {
+				sla = p["breach_at"].(string)
+			}
+		}
+		log.Debug("Ticket information", zap.Any("ticket", ticket))
 		save := &model.Ticket{
 			URL:            ticket.URL,
 			ID:             int(ticket.ID),
@@ -63,6 +73,7 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 			OrganizationID: int(ticket.OrganizationID),
 			GroupID:        int(ticket.GroupID),
 			Tags:           ticket.Tags,
+			SLA:            sla,
 		}
 		output = append(output, save)
 	}
