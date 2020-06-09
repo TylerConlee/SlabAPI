@@ -32,14 +32,15 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 		rl.Take()
 		// Send a request to Zendesk with the specified page number and
 		// sort by the most recently updated ticket
-		t, _, eos, err := c.client.GetIncrementalTickets(context.Background(), &opts)
+		t, cursor, eos, err := c.client.GetIncrementalTickets(context.Background(), &opts)
 
 		if err != nil {
 			log.Fatal("Fatal error", zap.String("Error", err.Error()))
 		}
 		log.Debug("Retrieved tickets from Zendesk in GetTickets loop", zap.Int("ticket_count", len(t)), zap.Int("total_count", len(tickets)))
 		tickets = append(tickets, t...)
-
+		opts.StartTime = ""
+		opts.Cursor = cursor
 		if eos {
 			log.Debug("Reached end of GetTickets loop", zap.Int("total_count", len(tickets)))
 			break
