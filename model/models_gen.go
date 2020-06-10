@@ -22,10 +22,6 @@ type Organization struct {
 	OrganizationFields []*OrgFields `json:"OrganizationFields"`
 }
 
-type SLA struct {
-	PolicyMetrics []*string `json:"PolicyMetrics"`
-}
-
 type Ticket struct {
 	URL            string         `json:"URL"`
 	ID             int            `json:"ID"`
@@ -40,7 +36,7 @@ type Ticket struct {
 	GroupID        int            `json:"GroupID"`
 	Tags           []string       `json:"Tags"`
 	CustomFields   []*CustomField `json:"CustomFields"`
-	SLA            []*SLA         `json:"SLA"`
+	SLA            string         `json:"SLA"`
 }
 
 type Tickets struct {

@@ -4,11 +4,13 @@ package resolver
 import (
 	"github.com/tylerconlee/SlabAPI/datastore"
 	"github.com/tylerconlee/SlabAPI/graph"
+	l "github.com/tylerconlee/slab/log"
 )
 
 // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
 var (
-	db *datastore.Db
+	db  *datastore.Db
+	log = l.Log
 )
 
 // Resolver references a generic resolution to a query made against the API

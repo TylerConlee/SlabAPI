@@ -38,7 +38,7 @@ type Ticket {
     GroupID: Int!
     Tags: [String!]
     CustomFields: [CustomField]
-    SLA: [SLA]  
+    SLA: String!
 }
 
 type CustomField {
@@ -46,9 +46,6 @@ type CustomField {
     Value: String
 }
 
-type SLA {
-    PolicyMetrics: [String]
-}
 
 type Organization {
     URL: String!

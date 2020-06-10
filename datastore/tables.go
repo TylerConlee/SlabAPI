@@ -2,8 +2,6 @@ package datastore
 
 import "database/sql"
 
-import "log"
-
 func createTables(db *sql.DB) {
 	tables := make([]string, 0)
 	// Create configuration table
@@ -13,6 +11,6 @@ func createTables(db *sql.DB) {
 			return
 		}
 	}
-	log.Printf("Postgres tables created successfully.")
+	log.Info("Postgres tables created successfully.")
 
 }
