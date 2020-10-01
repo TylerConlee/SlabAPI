@@ -61,3 +61,12 @@ type Organization {
 type OrgFields {
     SLALevel: String!
 }
+
+type View {
+    ID: Int!
+    Title: String!
+    Active: Boolean!
+    Description: String!
+    CreatedAt: String!
+    UpdatedAt: String!
+}
