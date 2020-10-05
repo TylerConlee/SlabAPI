@@ -7,10 +7,9 @@ import (
 	"go.uber.org/zap"
 )
 
-// GetViews takes the client, c, and requests the details for the
-// organization provided by the context to the Zendesk API wrapper. Once it
-// retreives that data from Zendesk, it converts the output into a model.
-// Organization.
+// GetViews takes the client, c, and requests a list of all
+// of the currently active views in Zendesk
+// View.
 func (c *Client) GetViews(ctx context.Context) ([]*model.View, error) {
 	var output []*model.View
 	o, _, err := c.client.GetViews(ctx)
@@ -26,6 +25,20 @@ func (c *Client) GetViews(ctx context.Context) ([]*model.View, error) {
 			CreatedAt: v.CreatedAt.String(),
 			UpdatedAt: v.UpdatedAt.String(),
 		})
+	}
+	return output, nil
+}
+
+// GetView takes the client, c, and a View ID, and pulls the details for a
+//specific view
+func (c *Client) GetView(ctx context.Context, viewID int64) (view *model.View, err error) {
+	var output *model.View
+	o, err := c.client.GetView(ctx, viewID)
+	output = &model.View{
+		ID:        int(o.ID),
+		Title:     o.Title,
+		CreatedAt: o.CreatedAt.String(),
+		UpdatedAt: o.UpdatedAt.String(),
 	}
 	return output, nil
 }
