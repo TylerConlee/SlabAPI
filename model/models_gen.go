@@ -53,6 +53,11 @@ type View struct {
 	UpdatedAt   string `json:"UpdatedAt"`
 }
 
+type Views struct {
+	Views []*View `json:"Views"`
+	Count int     `json:"Count"`
+}
+
 type ZendeskConfig struct {
 	User   string `json:"user"`
 	Apikey string `json:"apikey"`

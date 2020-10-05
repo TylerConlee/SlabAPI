@@ -69,6 +69,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		GetAllTickets   func(childComplexity int, config model.ZendeskConfigInput) int
+		GetAllViews     func(childComplexity int, config model.ZendeskConfigInput) int
 		GetOrganization func(childComplexity int, config model.ZendeskConfigInput, id int) int
 		Zendeskconfig   func(childComplexity int) int
 	}
@@ -104,6 +105,11 @@ type ComplexityRoot struct {
 		UpdatedAt   func(childComplexity int) int
 	}
 
+	Views struct {
+		Count func(childComplexity int) int
+		Views func(childComplexity int) int
+	}
+
 	ZendeskConfig struct {
 		Apikey func(childComplexity int) int
 		URL    func(childComplexity int) int
@@ -117,6 +123,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Zendeskconfig(ctx context.Context) (*model.ZendeskConfig, error)
 	GetAllTickets(ctx context.Context, config model.ZendeskConfigInput) (*model.Tickets, error)
+	GetAllViews(ctx context.Context, config model.ZendeskConfigInput) (*model.Views, error)
 	GetOrganization(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.Organization, error)
 }
 
@@ -235,6 +242,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetAllTickets(childComplexity, args["config"].(model.ZendeskConfigInput)), true
+
+	case "Query.getAllViews":
+		if e.complexity.Query.GetAllViews == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getAllViews_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetAllViews(childComplexity, args["config"].(model.ZendeskConfigInput)), true
 
 	case "Query.getOrganization":
 		if e.complexity.Query.GetOrganization == nil {
@@ -409,6 +428,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.View.UpdatedAt(childComplexity), true
 
+	case "Views.Count":
+		if e.complexity.Views.Count == nil {
+			break
+		}
+
+		return e.complexity.Views.Count(childComplexity), true
+
+	case "Views.Views":
+		if e.complexity.Views.Views == nil {
+			break
+		}
+
+		return e.complexity.Views.Views(childComplexity), true
+
 	case "ZendeskConfig.apikey":
 		if e.complexity.ZendeskConfig.Apikey == nil {
 			break
@@ -497,6 +530,7 @@ var sources = []*ast.Source{
 	&ast.Source{Name: "schema.graphql", Input: `type Query {
     zendeskconfig: ZendeskConfig!
     getAllTickets(config:ZendeskConfigInput!): Tickets!
+    getAllViews(config:ZendeskConfigInput!): Views!
     getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
 }
 type Mutation {
@@ -556,6 +590,12 @@ type Organization {
 
 type OrgFields {
     SLALevel: String!
+}
+
+
+type Views {
+    Views: [View!]!
+    Count: Int!
 }
 
 type View {
@@ -618,6 +658,20 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 }
 
 func (ec *executionContext) field_Query_getAllTickets_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.ZendeskConfigInput
+	if tmp, ok := rawArgs["config"]; ok {
+		arg0, err = ec.unmarshalNZendeskConfigInput2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfigInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["config"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getAllViews_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 model.ZendeskConfigInput
@@ -1162,6 +1216,47 @@ func (ec *executionContext) _Query_getAllTickets(ctx context.Context, field grap
 	res := resTmp.(*model.Tickets)
 	fc.Result = res
 	return ec.marshalNTickets2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTickets(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_getAllViews(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_getAllViews_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetAllViews(rctx, args["config"].(model.ZendeskConfigInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Views)
+	fc.Result = res
+	return ec.marshalNViews2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐViews(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_getOrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2014,6 +2109,74 @@ func (ec *executionContext) _View_UpdatedAt(ctx context.Context, field graphql.C
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Views_Views(ctx context.Context, field graphql.CollectedField, obj *model.Views) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Views",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Views, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.View)
+	fc.Result = res
+	return ec.marshalNView2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐViewᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Views_Count(ctx context.Context, field graphql.CollectedField, obj *model.Views) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Views",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Count, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _ZendeskConfig_user(ctx context.Context, field graphql.CollectedField, obj *model.ZendeskConfig) (ret graphql.Marshaler) {
@@ -3391,6 +3554,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "getAllViews":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getAllViews(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "getOrganization":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -3576,6 +3753,38 @@ func (ec *executionContext) _View(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "UpdatedAt":
 			out.Values[i] = ec._View_UpdatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var viewsImplementors = []string{"Views"}
+
+func (ec *executionContext) _Views(ctx context.Context, sel ast.SelectionSet, obj *model.Views) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, viewsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Views")
+		case "Views":
+			out.Values[i] = ec._Views_Views(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Count":
+			out.Values[i] = ec._Views_Count(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -3991,6 +4200,71 @@ func (ec *executionContext) marshalNTickets2ᚖgithubᚗcomᚋtylerconleeᚋSlab
 		return graphql.Null
 	}
 	return ec._Tickets(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNView2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐView(ctx context.Context, sel ast.SelectionSet, v model.View) graphql.Marshaler {
+	return ec._View(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNView2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐViewᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.View) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNView2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐView(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNView2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐView(ctx context.Context, sel ast.SelectionSet, v *model.View) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._View(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNViews2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐViews(ctx context.Context, sel ast.SelectionSet, v model.Views) graphql.Marshaler {
+	return ec._Views(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNViews2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐViews(ctx context.Context, sel ast.SelectionSet, v *model.Views) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Views(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNZendeskConfig2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfig(ctx context.Context, sel ast.SelectionSet, v model.ZendeskConfig) graphql.Marshaler {
