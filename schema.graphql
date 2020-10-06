@@ -1,6 +1,9 @@
 type Query {
     zendeskconfig: ZendeskConfig!
     getAllTickets(config:ZendeskConfigInput!): Tickets!
+    getAllViews(config:ZendeskConfigInput!): Views!
+    getView(config:ZendeskConfigInput!,id:Int!): View!
+    getViewCount(config:ZendeskConfigInput!,id:Int!): ViewCount!
     getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
 }
 type Mutation {
@@ -60,4 +63,27 @@ type Organization {
 
 type OrgFields {
     SLALevel: String!
+}
+
+
+type Views {
+    Views: [View!]!
+    Count: Int!
+}
+
+type View {
+    ID: Int!
+    Title: String!
+    Active: Boolean!
+    Description: String!
+    CreatedAt: String!
+    UpdatedAt: String!
+}
+
+type ViewCount {
+    ViewID: Int!
+    URL: String!
+    Value: Int!
+    Pretty: String!
+    Fresh: Boolean!
 }

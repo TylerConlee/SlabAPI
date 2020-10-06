@@ -44,6 +44,28 @@ type Tickets struct {
 	Count   int       `json:"Count"`
 }
 
+type View struct {
+	ID          int    `json:"ID"`
+	Title       string `json:"Title"`
+	Active      bool   `json:"Active"`
+	Description string `json:"Description"`
+	CreatedAt   string `json:"CreatedAt"`
+	UpdatedAt   string `json:"UpdatedAt"`
+}
+
+type ViewCount struct {
+	ViewID int    `json:"ViewID"`
+	URL    string `json:"URL"`
+	Value  int    `json:"Value"`
+	Pretty string `json:"Pretty"`
+	Fresh  bool   `json:"Fresh"`
+}
+
+type Views struct {
+	Views []*View `json:"Views"`
+	Count int     `json:"Count"`
+}
+
 type ZendeskConfig struct {
 	User   string `json:"user"`
 	Apikey string `json:"apikey"`

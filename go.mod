@@ -3,11 +3,11 @@ module github.com/tylerconlee/SlabAPI
 go 1.13
 
 require (
-	github.com/99designs/gqlgen v0.11.3
-	github.com/dgryski/trifles v0.0.0-20200323201526-dd97f9abfb48 // indirect
+	github.com/99designs/gqlgen v0.13.0
+	github.com/dgryski/trifles v0.0.0-20200830180326-aaf60a07f6a3 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
-	github.com/google/go-cmp v0.4.1 // indirect
-	github.com/gorilla/mux v1.7.4
+	github.com/google/go-cmp v0.5.2 // indirect
+	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/jcmturner/gokrb5/v8 v8.3.0 // indirect
@@ -23,8 +23,8 @@ require (
 	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/tidwall/pretty v1.0.1 // indirect
 	github.com/tylerconlee/slab v0.0.0-20200428212657-5eac97be730c
-	github.com/tylerconlee/zendesk-go v0.0.2
-	github.com/vektah/gqlparser/v2 v2.0.1
+	github.com/tylerconlee/zendesk-go v0.0.10
+	github.com/vektah/gqlparser/v2 v2.1.0
 	go.uber.org/ratelimit v0.1.1-0.20191205214636-7895686c0825
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200602180216-279210d13fed // indirect
