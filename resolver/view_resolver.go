@@ -11,7 +11,7 @@ import (
 // GetView retreives the specified view from Zendesk, and uses the
 // ZendeskConfig object to authenticate the request.
 // Endpoint: /views/{id}.json
-func (r *queryResolver) GetView(ctx context.Context, config model.ZendeskConfigInput) (*model.View, error) {
+func (r *queryResolver) GetView(ctx context.Context, config model.ZendeskConfigInput, viewID int) (*model.View, error) {
 	return nil, nil
 }
 
@@ -27,4 +27,14 @@ func (r *queryResolver) GetAllViews(ctx context.Context, config model.ZendeskCon
 	}
 
 	return views, nil
+}
+
+func (r *queryResolver) GetViewCount(ctx context.Context, config model.ZendeskConfigInput, viewID int) (*model.ViewCount, error) {
+	c = zendesk.Connect(&config)
+	count, err := c.GetViewCount(ctx, viewID)
+	if err != nil {
+		return nil, err
+	}
+
+	return count, nil
 }

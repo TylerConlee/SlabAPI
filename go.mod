@@ -23,7 +23,7 @@ require (
 	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/tidwall/pretty v1.0.1 // indirect
 	github.com/tylerconlee/slab v0.0.0-20200428212657-5eac97be730c
-	github.com/tylerconlee/zendesk-go v0.0.9
+	github.com/tylerconlee/zendesk-go v0.0.10
 	github.com/vektah/gqlparser/v2 v2.1.0
 	go.uber.org/ratelimit v0.1.1-0.20191205214636-7895686c0825
 	go.uber.org/zap v1.15.0

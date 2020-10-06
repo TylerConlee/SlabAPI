@@ -53,6 +53,14 @@ type View struct {
 	UpdatedAt   string `json:"UpdatedAt"`
 }
 
+type ViewCount struct {
+	ViewID int    `json:"ViewID"`
+	URL    string `json:"URL"`
+	Value  int    `json:"Value"`
+	Pretty string `json:"Pretty"`
+	Fresh  bool   `json:"Fresh"`
+}
+
 type Views struct {
 	Views []*View `json:"Views"`
 	Count int     `json:"Count"`
