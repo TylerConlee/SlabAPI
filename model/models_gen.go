@@ -44,6 +44,41 @@ type Tickets struct {
 	Count   int       `json:"Count"`
 }
 
+type Trigger struct {
+	URL         string             `json:"URL"`
+	ID          int                `json:"ID"`
+	Title       string             `json:"Title"`
+	RawTitle    string             `json:"RawTitle"`
+	Position    int                `json:"Position"`
+	Active      bool               `json:"Active"`
+	Conditions  *TriggerConditions `json:"Conditions"`
+	Actions     []*TriggerAction   `json:"Actions"`
+	Description string             `json:"Description"`
+	UpdatedAt   string             `json:"UpdatedAt"`
+	CreatedAt   string             `json:"CreatedAt"`
+}
+
+type TriggerAction struct {
+	Field string `json:"Field"`
+	Value string `json:"Value"`
+}
+
+type TriggerCondition struct {
+	Field    string `json:"Field"`
+	Operator string `json:"Operator"`
+	Value    string `json:"Value"`
+}
+
+type TriggerConditions struct {
+	Any []*TriggerCondition `json:"Any"`
+	All []*TriggerCondition `json:"All"`
+}
+
+type Triggers struct {
+	Triggers []*Trigger `json:"Triggers"`
+	Count    int        `json:"Count"`
+}
+
 type View struct {
 	ID          int    `json:"ID"`
 	Title       string `json:"Title"`

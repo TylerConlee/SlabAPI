@@ -1,10 +1,13 @@
 type Query {
     zendeskconfig: ZendeskConfig!
+    getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
     getAllTickets(config:ZendeskConfigInput!): Tickets!
+    getAllTriggers(config:ZendeskConfigInput!): Triggers!
+    getTrigger(config:ZendeskConfigInput!,id:Int!): Trigger!
     getAllViews(config:ZendeskConfigInput!): Views!
     getView(config:ZendeskConfigInput!,id:Int!): View!
     getViewCount(config:ZendeskConfigInput!,id:Int!): ViewCount!
-    getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
+    
 }
 type Mutation {
     updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
@@ -20,6 +23,26 @@ input ZendeskConfigInput {
     user: String!
     apikey: String!
     url: String!
+}
+
+type CustomField {
+    ID: Int
+    Value: String
+}
+
+type Organization {
+    URL: String!
+	ID: Int! 
+	Name: String! 
+	CreatedAt: String!
+	UpdatedAt: String!
+	DomainNames: [String!]
+	Tags: [String!]
+	OrganizationFields: [OrgFields]
+}
+
+type OrgFields {
+    SLALevel: String!
 }
 
 type Tickets {
@@ -44,26 +67,41 @@ type Ticket {
     SLA: String!
 }
 
-type CustomField {
-    ID: Int
-    Value: String
+type Triggers {
+    Triggers: [Trigger!]!
+    Count: Int!
 }
 
-
-type Organization {
+type Trigger {
     URL: String!
-	ID: Int! 
-	Name: String! 
-	CreatedAt: String!
-	UpdatedAt: String!
-	DomainNames: [String!]
-	Tags: [String!]
-	OrganizationFields: [OrgFields]
+    ID: Int!
+    Title: String!
+    RawTitle: String!
+    Position: Int!
+    Active: Boolean!
+    Conditions: TriggerConditions!
+    Actions: [TriggerAction!]!
+    Description: String!
+    UpdatedAt: String!
+    CreatedAt: String!
 }
 
-type OrgFields {
-    SLALevel: String!
+type TriggerConditions{
+    Any: [TriggerCondition!]!
+    All: [TriggerCondition!]!
 }
+
+type TriggerAction {
+    Field: String!
+    Value: String!
+}
+
+type TriggerCondition {
+    Field: String!
+    Operator: String!
+    Value: String!
+}
+
 
 
 type Views {

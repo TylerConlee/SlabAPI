@@ -69,8 +69,10 @@ type ComplexityRoot struct {
 
 	Query struct {
 		GetAllTickets   func(childComplexity int, config model.ZendeskConfigInput) int
+		GetAllTriggers  func(childComplexity int, config model.ZendeskConfigInput) int
 		GetAllViews     func(childComplexity int, config model.ZendeskConfigInput) int
 		GetOrganization func(childComplexity int, config model.ZendeskConfigInput, id int) int
+		GetTrigger      func(childComplexity int, config model.ZendeskConfigInput, id int) int
 		GetView         func(childComplexity int, config model.ZendeskConfigInput, id int) int
 		GetViewCount    func(childComplexity int, config model.ZendeskConfigInput, id int) int
 		Zendeskconfig   func(childComplexity int) int
@@ -96,6 +98,41 @@ type ComplexityRoot struct {
 	Tickets struct {
 		Count   func(childComplexity int) int
 		Tickets func(childComplexity int) int
+	}
+
+	Trigger struct {
+		Actions     func(childComplexity int) int
+		Active      func(childComplexity int) int
+		Conditions  func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		Description func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Position    func(childComplexity int) int
+		RawTitle    func(childComplexity int) int
+		Title       func(childComplexity int) int
+		URL         func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+	}
+
+	TriggerAction struct {
+		Field func(childComplexity int) int
+		Value func(childComplexity int) int
+	}
+
+	TriggerCondition struct {
+		Field    func(childComplexity int) int
+		Operator func(childComplexity int) int
+		Value    func(childComplexity int) int
+	}
+
+	TriggerConditions struct {
+		All func(childComplexity int) int
+		Any func(childComplexity int) int
+	}
+
+	Triggers struct {
+		Count    func(childComplexity int) int
+		Triggers func(childComplexity int) int
 	}
 
 	View struct {
@@ -132,11 +169,13 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Zendeskconfig(ctx context.Context) (*model.ZendeskConfig, error)
+	GetOrganization(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.Organization, error)
 	GetAllTickets(ctx context.Context, config model.ZendeskConfigInput) (*model.Tickets, error)
+	GetAllTriggers(ctx context.Context, config model.ZendeskConfigInput) (*model.Triggers, error)
+	GetTrigger(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.Trigger, error)
 	GetAllViews(ctx context.Context, config model.ZendeskConfigInput) (*model.Views, error)
 	GetView(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.View, error)
 	GetViewCount(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.ViewCount, error)
-	GetOrganization(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.Organization, error)
 }
 
 type executableSchema struct {
@@ -255,6 +294,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetAllTickets(childComplexity, args["config"].(model.ZendeskConfigInput)), true
 
+	case "Query.getAllTriggers":
+		if e.complexity.Query.GetAllTriggers == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getAllTriggers_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetAllTriggers(childComplexity, args["config"].(model.ZendeskConfigInput)), true
+
 	case "Query.getAllViews":
 		if e.complexity.Query.GetAllViews == nil {
 			break
@@ -278,6 +329,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetOrganization(childComplexity, args["config"].(model.ZendeskConfigInput), args["id"].(int)), true
+
+	case "Query.getTrigger":
+		if e.complexity.Query.GetTrigger == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getTrigger_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetTrigger(childComplexity, args["config"].(model.ZendeskConfigInput), args["id"].(int)), true
 
 	case "Query.getView":
 		if e.complexity.Query.GetView == nil {
@@ -421,6 +484,146 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Tickets.Tickets(childComplexity), true
+
+	case "Trigger.Actions":
+		if e.complexity.Trigger.Actions == nil {
+			break
+		}
+
+		return e.complexity.Trigger.Actions(childComplexity), true
+
+	case "Trigger.Active":
+		if e.complexity.Trigger.Active == nil {
+			break
+		}
+
+		return e.complexity.Trigger.Active(childComplexity), true
+
+	case "Trigger.Conditions":
+		if e.complexity.Trigger.Conditions == nil {
+			break
+		}
+
+		return e.complexity.Trigger.Conditions(childComplexity), true
+
+	case "Trigger.CreatedAt":
+		if e.complexity.Trigger.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Trigger.CreatedAt(childComplexity), true
+
+	case "Trigger.Description":
+		if e.complexity.Trigger.Description == nil {
+			break
+		}
+
+		return e.complexity.Trigger.Description(childComplexity), true
+
+	case "Trigger.ID":
+		if e.complexity.Trigger.ID == nil {
+			break
+		}
+
+		return e.complexity.Trigger.ID(childComplexity), true
+
+	case "Trigger.Position":
+		if e.complexity.Trigger.Position == nil {
+			break
+		}
+
+		return e.complexity.Trigger.Position(childComplexity), true
+
+	case "Trigger.RawTitle":
+		if e.complexity.Trigger.RawTitle == nil {
+			break
+		}
+
+		return e.complexity.Trigger.RawTitle(childComplexity), true
+
+	case "Trigger.Title":
+		if e.complexity.Trigger.Title == nil {
+			break
+		}
+
+		return e.complexity.Trigger.Title(childComplexity), true
+
+	case "Trigger.URL":
+		if e.complexity.Trigger.URL == nil {
+			break
+		}
+
+		return e.complexity.Trigger.URL(childComplexity), true
+
+	case "Trigger.UpdatedAt":
+		if e.complexity.Trigger.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Trigger.UpdatedAt(childComplexity), true
+
+	case "TriggerAction.Field":
+		if e.complexity.TriggerAction.Field == nil {
+			break
+		}
+
+		return e.complexity.TriggerAction.Field(childComplexity), true
+
+	case "TriggerAction.Value":
+		if e.complexity.TriggerAction.Value == nil {
+			break
+		}
+
+		return e.complexity.TriggerAction.Value(childComplexity), true
+
+	case "TriggerCondition.Field":
+		if e.complexity.TriggerCondition.Field == nil {
+			break
+		}
+
+		return e.complexity.TriggerCondition.Field(childComplexity), true
+
+	case "TriggerCondition.Operator":
+		if e.complexity.TriggerCondition.Operator == nil {
+			break
+		}
+
+		return e.complexity.TriggerCondition.Operator(childComplexity), true
+
+	case "TriggerCondition.Value":
+		if e.complexity.TriggerCondition.Value == nil {
+			break
+		}
+
+		return e.complexity.TriggerCondition.Value(childComplexity), true
+
+	case "TriggerConditions.All":
+		if e.complexity.TriggerConditions.All == nil {
+			break
+		}
+
+		return e.complexity.TriggerConditions.All(childComplexity), true
+
+	case "TriggerConditions.Any":
+		if e.complexity.TriggerConditions.Any == nil {
+			break
+		}
+
+		return e.complexity.TriggerConditions.Any(childComplexity), true
+
+	case "Triggers.Count":
+		if e.complexity.Triggers.Count == nil {
+			break
+		}
+
+		return e.complexity.Triggers.Count(childComplexity), true
+
+	case "Triggers.Triggers":
+		if e.complexity.Triggers.Triggers == nil {
+			break
+		}
+
+		return e.complexity.Triggers.Triggers(childComplexity), true
 
 	case "View.Active":
 		if e.complexity.View.Active == nil {
@@ -600,11 +803,14 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 var sources = []*ast.Source{
 	{Name: "schema.graphql", Input: `type Query {
     zendeskconfig: ZendeskConfig!
+    getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
     getAllTickets(config:ZendeskConfigInput!): Tickets!
+    getAllTriggers(config:ZendeskConfigInput!): Triggers!
+    getTrigger(config:ZendeskConfigInput!,id:Int!): Trigger!
     getAllViews(config:ZendeskConfigInput!): Views!
     getView(config:ZendeskConfigInput!,id:Int!): View!
     getViewCount(config:ZendeskConfigInput!,id:Int!): ViewCount!
-    getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
+    
 }
 type Mutation {
     updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
@@ -620,6 +826,26 @@ input ZendeskConfigInput {
     user: String!
     apikey: String!
     url: String!
+}
+
+type CustomField {
+    ID: Int
+    Value: String
+}
+
+type Organization {
+    URL: String!
+	ID: Int! 
+	Name: String! 
+	CreatedAt: String!
+	UpdatedAt: String!
+	DomainNames: [String!]
+	Tags: [String!]
+	OrganizationFields: [OrgFields]
+}
+
+type OrgFields {
+    SLALevel: String!
 }
 
 type Tickets {
@@ -644,26 +870,41 @@ type Ticket {
     SLA: String!
 }
 
-type CustomField {
-    ID: Int
-    Value: String
+type Triggers {
+    Triggers: [Trigger!]!
+    Count: Int!
 }
 
-
-type Organization {
+type Trigger {
     URL: String!
-	ID: Int! 
-	Name: String! 
-	CreatedAt: String!
-	UpdatedAt: String!
-	DomainNames: [String!]
-	Tags: [String!]
-	OrganizationFields: [OrgFields]
+    ID: Int!
+    Title: String!
+    RawTitle: String!
+    Position: Int!
+    Active: Boolean!
+    Conditions: TriggerConditions!
+    Actions: [TriggerAction!]!
+    Description: String!
+    UpdatedAt: String!
+    CreatedAt: String!
 }
 
-type OrgFields {
-    SLALevel: String!
+type TriggerConditions{
+    Any: [TriggerCondition!]!
+    All: [TriggerCondition!]!
 }
+
+type TriggerAction {
+    Field: String!
+    Value: String!
+}
+
+type TriggerCondition {
+    Field: String!
+    Operator: String!
+    Value: String!
+}
+
 
 
 type Views {
@@ -757,6 +998,21 @@ func (ec *executionContext) field_Query_getAllTickets_args(ctx context.Context, 
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_getAllTriggers_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.ZendeskConfigInput
+	if tmp, ok := rawArgs["config"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("config"))
+		arg0, err = ec.unmarshalNZendeskConfigInput2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfigInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["config"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_getAllViews_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -773,6 +1029,30 @@ func (ec *executionContext) field_Query_getAllViews_args(ctx context.Context, ra
 }
 
 func (ec *executionContext) field_Query_getOrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.ZendeskConfigInput
+	if tmp, ok := rawArgs["config"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("config"))
+		arg0, err = ec.unmarshalNZendeskConfigInput2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfigInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["config"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getTrigger_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 model.ZendeskConfigInput
@@ -1329,6 +1609,48 @@ func (ec *executionContext) _Query_zendeskconfig(ctx context.Context, field grap
 	return ec.marshalNZendeskConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfig(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_getOrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_getOrganization_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetOrganization(rctx, args["config"].(model.ZendeskConfigInput), args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Organization)
+	fc.Result = res
+	return ec.marshalNOrganization2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐOrganization(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_getAllTickets(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1369,6 +1691,90 @@ func (ec *executionContext) _Query_getAllTickets(ctx context.Context, field grap
 	res := resTmp.(*model.Tickets)
 	fc.Result = res
 	return ec.marshalNTickets2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTickets(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_getAllTriggers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_getAllTriggers_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetAllTriggers(rctx, args["config"].(model.ZendeskConfigInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Triggers)
+	fc.Result = res
+	return ec.marshalNTriggers2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggers(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_getTrigger(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_getTrigger_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetTrigger(rctx, args["config"].(model.ZendeskConfigInput), args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Trigger)
+	fc.Result = res
+	return ec.marshalNTrigger2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTrigger(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_getAllViews(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1495,48 +1901,6 @@ func (ec *executionContext) _Query_getViewCount(ctx context.Context, field graph
 	res := resTmp.(*model.ViewCount)
 	fc.Result = res
 	return ec.marshalNViewCount2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐViewCount(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_getOrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getOrganization_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetOrganization(rctx, args["config"].(model.ZendeskConfigInput), args["id"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.Organization)
-	fc.Result = res
-	return ec.marshalNOrganization2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐOrganization(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2138,6 +2502,706 @@ func (ec *executionContext) _Tickets_Count(ctx context.Context, field graphql.Co
 	}()
 	fc := &graphql.FieldContext{
 		Object:     "Tickets",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Count, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_URL(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_ID(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_Title(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Title, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_RawTitle(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RawTitle, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_Position(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Position, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_Active(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Active, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_Conditions(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Conditions, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.TriggerConditions)
+	fc.Result = res
+	return ec.marshalNTriggerConditions2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerConditions(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_Actions(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Actions, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TriggerAction)
+	fc.Result = res
+	return ec.marshalNTriggerAction2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerActionᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_Description(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Description, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Trigger_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Trigger",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TriggerAction_Field(ctx context.Context, field graphql.CollectedField, obj *model.TriggerAction) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TriggerAction",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Field, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TriggerAction_Value(ctx context.Context, field graphql.CollectedField, obj *model.TriggerAction) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TriggerAction",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Value, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TriggerCondition_Field(ctx context.Context, field graphql.CollectedField, obj *model.TriggerCondition) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TriggerCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Field, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TriggerCondition_Operator(ctx context.Context, field graphql.CollectedField, obj *model.TriggerCondition) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TriggerCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Operator, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TriggerCondition_Value(ctx context.Context, field graphql.CollectedField, obj *model.TriggerCondition) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TriggerCondition",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Value, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TriggerConditions_Any(ctx context.Context, field graphql.CollectedField, obj *model.TriggerConditions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TriggerConditions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Any, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TriggerCondition)
+	fc.Result = res
+	return ec.marshalNTriggerCondition2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerConditionᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TriggerConditions_All(ctx context.Context, field graphql.CollectedField, obj *model.TriggerConditions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TriggerConditions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.All, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TriggerCondition)
+	fc.Result = res
+	return ec.marshalNTriggerCondition2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerConditionᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Triggers_Triggers(ctx context.Context, field graphql.CollectedField, obj *model.Triggers) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Triggers",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Triggers, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Trigger)
+	fc.Result = res
+	return ec.marshalNTrigger2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Triggers_Count(ctx context.Context, field graphql.CollectedField, obj *model.Triggers) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Triggers",
 		Field:      field,
 		Args:       nil,
 		IsMethod:   false,
@@ -4021,6 +5085,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "getOrganization":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getOrganization(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "getAllTickets":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -4030,6 +5108,34 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getAllTickets(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "getAllTriggers":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getAllTriggers(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "getTrigger":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getTrigger(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -4072,20 +5178,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getViewCount(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
-		case "getOrganization":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getOrganization(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -4210,6 +5302,216 @@ func (ec *executionContext) _Tickets(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "Count":
 			out.Values[i] = ec._Tickets_Count(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var triggerImplementors = []string{"Trigger"}
+
+func (ec *executionContext) _Trigger(ctx context.Context, sel ast.SelectionSet, obj *model.Trigger) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, triggerImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Trigger")
+		case "URL":
+			out.Values[i] = ec._Trigger_URL(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "ID":
+			out.Values[i] = ec._Trigger_ID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Title":
+			out.Values[i] = ec._Trigger_Title(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "RawTitle":
+			out.Values[i] = ec._Trigger_RawTitle(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Position":
+			out.Values[i] = ec._Trigger_Position(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Active":
+			out.Values[i] = ec._Trigger_Active(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Conditions":
+			out.Values[i] = ec._Trigger_Conditions(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Actions":
+			out.Values[i] = ec._Trigger_Actions(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Description":
+			out.Values[i] = ec._Trigger_Description(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "UpdatedAt":
+			out.Values[i] = ec._Trigger_UpdatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "CreatedAt":
+			out.Values[i] = ec._Trigger_CreatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var triggerActionImplementors = []string{"TriggerAction"}
+
+func (ec *executionContext) _TriggerAction(ctx context.Context, sel ast.SelectionSet, obj *model.TriggerAction) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, triggerActionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TriggerAction")
+		case "Field":
+			out.Values[i] = ec._TriggerAction_Field(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Value":
+			out.Values[i] = ec._TriggerAction_Value(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var triggerConditionImplementors = []string{"TriggerCondition"}
+
+func (ec *executionContext) _TriggerCondition(ctx context.Context, sel ast.SelectionSet, obj *model.TriggerCondition) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, triggerConditionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TriggerCondition")
+		case "Field":
+			out.Values[i] = ec._TriggerCondition_Field(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Operator":
+			out.Values[i] = ec._TriggerCondition_Operator(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Value":
+			out.Values[i] = ec._TriggerCondition_Value(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var triggerConditionsImplementors = []string{"TriggerConditions"}
+
+func (ec *executionContext) _TriggerConditions(ctx context.Context, sel ast.SelectionSet, obj *model.TriggerConditions) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, triggerConditionsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TriggerConditions")
+		case "Any":
+			out.Values[i] = ec._TriggerConditions_Any(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "All":
+			out.Values[i] = ec._TriggerConditions_All(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var triggersImplementors = []string{"Triggers"}
+
+func (ec *executionContext) _Triggers(ctx context.Context, sel ast.SelectionSet, obj *model.Triggers) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, triggersImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Triggers")
+		case "Triggers":
+			out.Values[i] = ec._Triggers_Triggers(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Count":
+			out.Values[i] = ec._Triggers_Count(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -4755,6 +6057,175 @@ func (ec *executionContext) marshalNTickets2ᚖgithubᚗcomᚋtylerconleeᚋSlab
 		return graphql.Null
 	}
 	return ec._Tickets(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNTrigger2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTrigger(ctx context.Context, sel ast.SelectionSet, v model.Trigger) graphql.Marshaler {
+	return ec._Trigger(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNTrigger2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Trigger) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNTrigger2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTrigger(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNTrigger2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTrigger(ctx context.Context, sel ast.SelectionSet, v *model.Trigger) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Trigger(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNTriggerAction2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerActionᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TriggerAction) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNTriggerAction2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerAction(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNTriggerAction2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerAction(ctx context.Context, sel ast.SelectionSet, v *model.TriggerAction) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._TriggerAction(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNTriggerCondition2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerConditionᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TriggerCondition) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNTriggerCondition2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerCondition(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNTriggerCondition2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerCondition(ctx context.Context, sel ast.SelectionSet, v *model.TriggerCondition) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._TriggerCondition(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNTriggerConditions2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerConditions(ctx context.Context, sel ast.SelectionSet, v *model.TriggerConditions) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._TriggerConditions(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNTriggers2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggers(ctx context.Context, sel ast.SelectionSet, v model.Triggers) graphql.Marshaler {
+	return ec._Triggers(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNTriggers2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggers(ctx context.Context, sel ast.SelectionSet, v *model.Triggers) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Triggers(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNView2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐView(ctx context.Context, sel ast.SelectionSet, v model.View) graphql.Marshaler {
