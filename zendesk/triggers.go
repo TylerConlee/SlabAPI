@@ -125,6 +125,7 @@ func (c *Client) GetTrigger(ctx context.Context, id int) (output *model.Trigger,
 		Active:      o.Active,
 		Description: o.Description,
 		Conditions:  conditions,
+		Actions:     actions,
 	}
 	return
 }
