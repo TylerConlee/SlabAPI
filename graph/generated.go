@@ -125,6 +125,11 @@ type ComplexityRoot struct {
 		Value    func(childComplexity int) int
 	}
 
+	TriggerConditions struct {
+		All func(childComplexity int) int
+		Any func(childComplexity int) int
+	}
+
 	Triggers struct {
 		Count    func(childComplexity int) int
 		Triggers func(childComplexity int) int
@@ -592,6 +597,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TriggerCondition.Value(childComplexity), true
 
+	case "TriggerConditions.All":
+		if e.complexity.TriggerConditions.All == nil {
+			break
+		}
+
+		return e.complexity.TriggerConditions.All(childComplexity), true
+
+	case "TriggerConditions.Any":
+		if e.complexity.TriggerConditions.Any == nil {
+			break
+		}
+
+		return e.complexity.TriggerConditions.Any(childComplexity), true
+
 	case "Triggers.Count":
 		if e.complexity.Triggers.Count == nil {
 			break
@@ -863,11 +882,16 @@ type Trigger {
     RawTitle: String!
     Position: Int!
     Active: Boolean!
-    Conditions: [TriggerCondition!]!
+    Conditions: TriggerConditions!
     Actions: [TriggerAction!]!
     Description: String!
     UpdatedAt: String!
     CreatedAt: String!
+}
+
+type TriggerConditions{
+    Any: [TriggerCondition!]!
+    All: [TriggerCondition!]!
 }
 
 type TriggerAction {
@@ -2744,9 +2768,9 @@ func (ec *executionContext) _Trigger_Conditions(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.TriggerCondition)
+	res := resTmp.(*model.TriggerConditions)
 	fc.Result = res
-	return ec.marshalNTriggerCondition2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerConditionᚄ(ctx, field.Selections, res)
+	return ec.marshalNTriggerConditions2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerConditions(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Trigger_Actions(ctx context.Context, field graphql.CollectedField, obj *model.Trigger) (ret graphql.Marshaler) {
@@ -3062,6 +3086,76 @@ func (ec *executionContext) _TriggerCondition_Value(ctx context.Context, field g
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TriggerConditions_Any(ctx context.Context, field graphql.CollectedField, obj *model.TriggerConditions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TriggerConditions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Any, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TriggerCondition)
+	fc.Result = res
+	return ec.marshalNTriggerCondition2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerConditionᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _TriggerConditions_All(ctx context.Context, field graphql.CollectedField, obj *model.TriggerConditions) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "TriggerConditions",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.All, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TriggerCondition)
+	fc.Result = res
+	return ec.marshalNTriggerCondition2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerConditionᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Triggers_Triggers(ctx context.Context, field graphql.CollectedField, obj *model.Triggers) (ret graphql.Marshaler) {
@@ -5368,6 +5462,38 @@ func (ec *executionContext) _TriggerCondition(ctx context.Context, sel ast.Selec
 	return out
 }
 
+var triggerConditionsImplementors = []string{"TriggerConditions"}
+
+func (ec *executionContext) _TriggerConditions(ctx context.Context, sel ast.SelectionSet, obj *model.TriggerConditions) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, triggerConditionsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TriggerConditions")
+		case "Any":
+			out.Values[i] = ec._TriggerConditions_Any(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "All":
+			out.Values[i] = ec._TriggerConditions_All(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var triggersImplementors = []string{"Triggers"}
 
 func (ec *executionContext) _Triggers(ctx context.Context, sel ast.SelectionSet, obj *model.Triggers) graphql.Marshaler {
@@ -6076,6 +6202,16 @@ func (ec *executionContext) marshalNTriggerCondition2ᚖgithubᚗcomᚋtylerconl
 		return graphql.Null
 	}
 	return ec._TriggerCondition(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNTriggerConditions2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggerConditions(ctx context.Context, sel ast.SelectionSet, v *model.TriggerConditions) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._TriggerConditions(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNTriggers2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐTriggers(ctx context.Context, sel ast.SelectionSet, v model.Triggers) graphql.Marshaler {

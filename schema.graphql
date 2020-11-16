@@ -79,11 +79,16 @@ type Trigger {
     RawTitle: String!
     Position: Int!
     Active: Boolean!
-    Conditions: [TriggerCondition!]!
+    Conditions: TriggerConditions!
     Actions: [TriggerAction!]!
     Description: String!
     UpdatedAt: String!
     CreatedAt: String!
+}
+
+type TriggerConditions{
+    Any: [TriggerCondition!]!
+    All: [TriggerCondition!]!
 }
 
 type TriggerAction {

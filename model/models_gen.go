@@ -45,17 +45,17 @@ type Tickets struct {
 }
 
 type Trigger struct {
-	URL         string              `json:"URL"`
-	ID          int                 `json:"ID"`
-	Title       string              `json:"Title"`
-	RawTitle    string              `json:"RawTitle"`
-	Position    int                 `json:"Position"`
-	Active      bool                `json:"Active"`
-	Conditions  []*TriggerCondition `json:"Conditions"`
-	Actions     []*TriggerAction    `json:"Actions"`
-	Description string              `json:"Description"`
-	UpdatedAt   string              `json:"UpdatedAt"`
-	CreatedAt   string              `json:"CreatedAt"`
+	URL         string             `json:"URL"`
+	ID          int                `json:"ID"`
+	Title       string             `json:"Title"`
+	RawTitle    string             `json:"RawTitle"`
+	Position    int                `json:"Position"`
+	Active      bool               `json:"Active"`
+	Conditions  *TriggerConditions `json:"Conditions"`
+	Actions     []*TriggerAction   `json:"Actions"`
+	Description string             `json:"Description"`
+	UpdatedAt   string             `json:"UpdatedAt"`
+	CreatedAt   string             `json:"CreatedAt"`
 }
 
 type TriggerAction struct {
@@ -67,6 +67,11 @@ type TriggerCondition struct {
 	Field    string `json:"Field"`
 	Operator string `json:"Operator"`
 	Value    string `json:"Value"`
+}
+
+type TriggerConditions struct {
+	Any []*TriggerCondition `json:"Any"`
+	All []*TriggerCondition `json:"All"`
 }
 
 type Triggers struct {
