@@ -1,0 +1,127 @@
+type Query {
+    zendeskconfig: ZendeskConfig!
+    getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
+    getAllTickets(config:ZendeskConfigInput!): Tickets!
+    getAllTriggers(config:ZendeskConfigInput!): Triggers!
+    getTrigger(config:ZendeskConfigInput!,id:Int!): Trigger!
+    getAllViews(config:ZendeskConfigInput!): Views!
+    getView(config:ZendeskConfigInput!,id:Int!): View!
+    getViewCount(config:ZendeskConfigInput!,id:Int!): ViewCount!
+    
+}
+type Mutation {
+    updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
+}
+
+type ZendeskConfig {
+    user: String!
+    apikey: String!
+    url: String!
+}
+
+input ZendeskConfigInput {
+    user: String!
+    apikey: String!
+    url: String!
+}
+
+type CustomField {
+    ID: Int
+    Value: String
+}
+
+type Organization {
+    URL: String!
+	ID: Int! 
+	Name: String! 
+	CreatedAt: String!
+	UpdatedAt: String!
+	DomainNames: [String!]
+	Tags: [String!]
+	OrganizationFields: [OrgFields]
+}
+
+type OrgFields {
+    SLALevel: String!
+}
+
+type Tickets {
+    Tickets: [Ticket!]!
+    Count: Int!
+}
+
+type Ticket {
+    URL: String!
+    ID: Int!
+    CreatedAt: String!
+    UpdatedAt: String!
+    Subject: String!
+    Description: String!
+    Priority: String!
+    Status: String!
+    RequesterID: Int!
+    OrganizationID: Int!
+    GroupID: Int!
+    Tags: [String!]
+    CustomFields: [CustomField]
+    SLA: String!
+}
+
+type Triggers {
+    Triggers: [Trigger!]!
+    Count: Int!
+}
+
+type Trigger {
+    URL: String!
+    ID: Int!
+    Title: String!
+    RawTitle: String!
+    Position: Int!
+    Active: Boolean!
+    Conditions: TriggerConditions!
+    Actions: [TriggerAction!]!
+    Description: String!
+    UpdatedAt: String!
+    CreatedAt: String!
+}
+
+type TriggerConditions{
+    Any: [TriggerCondition!]!
+    All: [TriggerCondition!]!
+}
+
+type TriggerAction {
+    Field: String!
+    Value: String!
+}
+
+type TriggerCondition {
+    Field: String!
+    Operator: String!
+    Value: String!
+}
+
+
+
+type Views {
+    Views: [View!]!
+    Count: Int!
+}
+
+type View {
+    ID: Int!
+    Title: String!
+    Active: Boolean!
+    Description: String!
+    CreatedAt: String!
+    UpdatedAt: String!
+}
+
+type ViewCount {
+    ViewID: Int!
+    URL: String!
+    Value: Int!
+    Pretty: String!
+    Fresh: Boolean!
+}
