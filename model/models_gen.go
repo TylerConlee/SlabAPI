@@ -101,12 +101,6 @@ type Views struct {
 	Count int     `json:"Count"`
 }
 
-type ZendeskConfig struct {
-	User   string `json:"user"`
-	Apikey string `json:"apikey"`
-	URL    string `json:"url"`
-}
-
 type ZendeskConfigInput struct {
 	User   string `json:"user"`
 	Apikey string `json:"apikey"`

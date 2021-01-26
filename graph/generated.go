@@ -35,7 +35,6 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	Mutation() MutationResolver
 	Query() QueryResolver
 }
 
@@ -46,10 +45,6 @@ type ComplexityRoot struct {
 	CustomField struct {
 		ID    func(childComplexity int) int
 		Value func(childComplexity int) int
-	}
-
-	Mutation struct {
-		UpdateZendeskConfig func(childComplexity int, user string, apikey string, url string) int
 	}
 
 	OrgFields struct {
@@ -75,7 +70,6 @@ type ComplexityRoot struct {
 		GetTrigger      func(childComplexity int, config model.ZendeskConfigInput, id int) int
 		GetView         func(childComplexity int, config model.ZendeskConfigInput, id int) int
 		GetViewCount    func(childComplexity int, config model.ZendeskConfigInput, id int) int
-		Zendeskconfig   func(childComplexity int) int
 	}
 
 	Ticket struct {
@@ -156,19 +150,9 @@ type ComplexityRoot struct {
 		Count func(childComplexity int) int
 		Views func(childComplexity int) int
 	}
-
-	ZendeskConfig struct {
-		Apikey func(childComplexity int) int
-		URL    func(childComplexity int) int
-		User   func(childComplexity int) int
-	}
 }
 
-type MutationResolver interface {
-	UpdateZendeskConfig(ctx context.Context, user string, apikey string, url string) (*model.ZendeskConfig, error)
-}
 type QueryResolver interface {
-	Zendeskconfig(ctx context.Context) (*model.ZendeskConfig, error)
 	GetOrganization(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.Organization, error)
 	GetAllTickets(ctx context.Context, config model.ZendeskConfigInput) (*model.Tickets, error)
 	GetAllTriggers(ctx context.Context, config model.ZendeskConfigInput) (*model.Triggers, error)
@@ -206,18 +190,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.CustomField.Value(childComplexity), true
-
-	case "Mutation.updateZendeskConfig":
-		if e.complexity.Mutation.UpdateZendeskConfig == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_updateZendeskConfig_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UpdateZendeskConfig(childComplexity, args["user"].(string), args["apikey"].(string), args["url"].(string)), true
 
 	case "OrgFields.SLALevel":
 		if e.complexity.OrgFields.SLALevel == nil {
@@ -365,13 +337,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetViewCount(childComplexity, args["config"].(model.ZendeskConfigInput), args["id"].(int)), true
-
-	case "Query.zendeskconfig":
-		if e.complexity.Query.Zendeskconfig == nil {
-			break
-		}
-
-		return e.complexity.Query.Zendeskconfig(childComplexity), true
 
 	case "Ticket.CreatedAt":
 		if e.complexity.Ticket.CreatedAt == nil {
@@ -716,27 +681,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Views.Views(childComplexity), true
 
-	case "ZendeskConfig.apikey":
-		if e.complexity.ZendeskConfig.Apikey == nil {
-			break
-		}
-
-		return e.complexity.ZendeskConfig.Apikey(childComplexity), true
-
-	case "ZendeskConfig.url":
-		if e.complexity.ZendeskConfig.URL == nil {
-			break
-		}
-
-		return e.complexity.ZendeskConfig.URL(childComplexity), true
-
-	case "ZendeskConfig.user":
-		if e.complexity.ZendeskConfig.User == nil {
-			break
-		}
-
-		return e.complexity.ZendeskConfig.User(childComplexity), true
-
 	}
 	return 0, false
 }
@@ -754,20 +698,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			}
 			first = false
 			data := ec._Query(ctx, rc.Operation.SelectionSet)
-			var buf bytes.Buffer
-			data.MarshalGQL(&buf)
-
-			return &graphql.Response{
-				Data: buf.Bytes(),
-			}
-		}
-	case ast.Mutation:
-		return func(ctx context.Context) *graphql.Response {
-			if !first {
-				return nil
-			}
-			first = false
-			data := ec._Mutation(ctx, rc.Operation.SelectionSet)
 			var buf bytes.Buffer
 			data.MarshalGQL(&buf)
 
@@ -802,7 +732,6 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	{Name: "schema.graphql", Input: `type Query {
-    zendeskconfig: ZendeskConfig!
     getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
     getAllTickets(config:ZendeskConfigInput!): Tickets!
     getAllTriggers(config:ZendeskConfigInput!): Triggers!
@@ -811,15 +740,6 @@ var sources = []*ast.Source{
     getView(config:ZendeskConfigInput!,id:Int!): View!
     getViewCount(config:ZendeskConfigInput!,id:Int!): ViewCount!
     
-}
-type Mutation {
-    updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
-}
-
-type ZendeskConfig {
-    user: String!
-    apikey: String!
-    url: String!
 }
 
 input ZendeskConfigInput {
@@ -934,39 +854,6 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
-
-func (ec *executionContext) field_Mutation_updateZendeskConfig_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["user"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("user"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["user"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["apikey"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("apikey"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["apikey"] = arg1
-	var arg2 string
-	if tmp, ok := rawArgs["url"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
-		arg2, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["url"] = arg2
-	return args, nil
-}
 
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -1224,48 +1111,6 @@ func (ec *executionContext) _CustomField_Value(ctx context.Context, field graphq
 	res := resTmp.(*string)
 	fc.Result = res
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_updateZendeskConfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_updateZendeskConfig_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateZendeskConfig(rctx, args["user"].(string), args["apikey"].(string), args["url"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.ZendeskConfig)
-	fc.Result = res
-	return ec.marshalNZendeskConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _OrgFields_SLALevel(ctx context.Context, field graphql.CollectedField, obj *model.OrgFields) (ret graphql.Marshaler) {
@@ -1572,41 +1417,6 @@ func (ec *executionContext) _Organization_OrganizationFields(ctx context.Context
 	res := resTmp.([]*model.OrgFields)
 	fc.Result = res
 	return ec.marshalOOrgFields2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐOrgFields(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_zendeskconfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Zendeskconfig(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.ZendeskConfig)
-	fc.Result = res
-	return ec.marshalNZendeskConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_getOrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3683,111 +3493,6 @@ func (ec *executionContext) _Views_Count(ctx context.Context, field graphql.Coll
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ZendeskConfig_user(ctx context.Context, field graphql.CollectedField, obj *model.ZendeskConfig) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "ZendeskConfig",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.User, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _ZendeskConfig_apikey(ctx context.Context, field graphql.CollectedField, obj *model.ZendeskConfig) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "ZendeskConfig",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Apikey, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _ZendeskConfig_url(ctx context.Context, field graphql.CollectedField, obj *model.ZendeskConfig) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "ZendeskConfig",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.URL, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -4945,37 +4650,6 @@ func (ec *executionContext) _CustomField(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
-var mutationImplementors = []string{"Mutation"}
-
-func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, mutationImplementors)
-
-	ctx = graphql.WithFieldContext(ctx, &graphql.FieldContext{
-		Object: "Mutation",
-	})
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Mutation")
-		case "updateZendeskConfig":
-			out.Values[i] = ec._Mutation_updateZendeskConfig(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var orgFieldsImplementors = []string{"OrgFields"}
 
 func (ec *executionContext) _OrgFields(ctx context.Context, sel ast.SelectionSet, obj *model.OrgFields) graphql.Marshaler {
@@ -5071,20 +4745,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "zendeskconfig":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_zendeskconfig(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
 		case "getOrganization":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -5643,43 +5303,6 @@ func (ec *executionContext) _Views(ctx context.Context, sel ast.SelectionSet, ob
 			}
 		case "Count":
 			out.Values[i] = ec._Views_Count(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var zendeskConfigImplementors = []string{"ZendeskConfig"}
-
-func (ec *executionContext) _ZendeskConfig(ctx context.Context, sel ast.SelectionSet, obj *model.ZendeskConfig) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, zendeskConfigImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("ZendeskConfig")
-		case "user":
-			out.Values[i] = ec._ZendeskConfig_user(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "apikey":
-			out.Values[i] = ec._ZendeskConfig_apikey(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "url":
-			out.Values[i] = ec._ZendeskConfig_url(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -6305,20 +5928,6 @@ func (ec *executionContext) marshalNViews2ᚖgithubᚗcomᚋtylerconleeᚋSlabAP
 		return graphql.Null
 	}
 	return ec._Views(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNZendeskConfig2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfig(ctx context.Context, sel ast.SelectionSet, v model.ZendeskConfig) graphql.Marshaler {
-	return ec._ZendeskConfig(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNZendeskConfig2ᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfig(ctx context.Context, sel ast.SelectionSet, v *model.ZendeskConfig) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._ZendeskConfig(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNZendeskConfigInput2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfigInput(ctx context.Context, v interface{}) (model.ZendeskConfigInput, error) {

@@ -1,5 +1,4 @@
 type Query {
-    zendeskconfig: ZendeskConfig!
     getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
     getAllTickets(config:ZendeskConfigInput!): Tickets!
     getAllTriggers(config:ZendeskConfigInput!): Triggers!
@@ -8,15 +7,6 @@ type Query {
     getView(config:ZendeskConfigInput!,id:Int!): View!
     getViewCount(config:ZendeskConfigInput!,id:Int!): ViewCount!
     
-}
-type Mutation {
-    updateZendeskConfig(user:String!,apikey:String!,url:String!): ZendeskConfig!
-}
-
-type ZendeskConfig {
-    user: String!
-    apikey: String!
-    url: String!
 }
 
 input ZendeskConfigInput {
