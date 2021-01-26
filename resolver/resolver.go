@@ -3,7 +3,7 @@ package resolver
 //go:generate go run github.com/99designs/gqlgen
 import (
 	"github.com/tylerconlee/SlabAPI/graph"
-	l "github.com/tylerconlee/slab/log"
+	l "github.com/tylerconlee/SlabAPI/log"
 )
 
 // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.

@@ -9,7 +9,7 @@ var (
 )
 
 func main() {
-	log.Info("Slab - Zendesk Assistant by Tyler Conlee")
+	log.Info("Deskmate - Zendesk Assistant by Tyler Conlee")
 
 	NewRouter()
 }
