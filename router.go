@@ -1,13 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 
 	"github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/mux"
-	"github.com/newrelic/go-agent/v3/integrations/nrgorilla"
-	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/tylerconlee/SlabAPI/graph"
 	"github.com/tylerconlee/SlabAPI/resolver"
 )
@@ -17,11 +16,14 @@ import (
 // Slab will listen for to a function that should be ran when that endpoint is
 // requested.
 func NewRouter() {
-	r := mux.NewRouter()
+	s := mux.NewRouter()
+	r := s.PathPrefix("/zendesk").Subrouter()
 	r.HandleFunc("/", IndexRouter)
 	r.HandleFunc("/graphql", handler.Playground("GraphQL playground", "/query"))
-	r.HandleFunc(newrelic.WrapHandleFunc(nrApp, "/query", handler.GraphQL(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}}))))
-	http.ListenAndServe(":8090", nrgorilla.InstrumentRoutes(r, nrApp))
+	r.HandleFunc("/query", handler.GraphQL(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}})))
+	fmt.Println("Now listening on port 8090")
+	http.ListenAndServe(":8090", r)
+
 }
 
 // IndexRouter is the root level endpoint that's returned when a user requests the "/" endpoint.

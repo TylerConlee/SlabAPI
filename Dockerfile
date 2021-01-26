@@ -20,3 +20,4 @@ FROM scratch
 COPY --from=builder /go/bin/zendesk /go/bin/zendesk
 # Run the zendesk binary.
 ENTRYPOINT ["/go/bin/zendesk"]
+EXPOSE 8090
