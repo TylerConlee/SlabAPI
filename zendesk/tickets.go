@@ -7,6 +7,7 @@ import (
 
 	"github.com/tylerconlee/SlabAPI/model"
 	"github.com/tylerconlee/zendesk-go/zendesk"
+	"go.uber.org/ratelimit"
 	"go.uber.org/zap"
 )
 
@@ -17,28 +18,36 @@ import (
 // Ticket.
 func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err error) {
 
-	time := time.Now().AddDate(0, 0, -5).Unix()
+	t := time.Now().AddDate(0, 0, -5).Unix()
 	// Initialize first page
 	opts := zendesk.TicketListOptions{
-		StartTime: strconv.Itoa(int(time)),
+		StartTime: strconv.Itoa(int(t)),
 		Sideload:  "slas",
 	}
 
 	var tickets []zendesk.Ticket
 	log.Debug("Beginning GetTickets loop")
+	rl := ratelimit.New(10, ratelimit.Per(time.Minute))
+	// Loop through all pages of API response
+	for {
+		rl.Take()
+		// Send a request to Zendesk with the specified page number and
+		// sort by the most recently updated ticket
+		t, cursor, eos, err := c.client.GetIncrementalTickets(context.Background(), &opts)
 
-	// Send a request to Zendesk with the specified page number and
-	// sort by the most recently updated ticket
-	t, cursor, _, err := c.client.GetIncrementalTickets(context.Background(), &opts)
+		if err != nil {
+			log.Fatal("Fatal error", zap.String("Error", err.Error()))
+		}
+		log.Debug("Retrieved tickets from Zendesk in GetTickets loop", zap.Int("ticket_count", len(t)), zap.Int("total_count", len(tickets)))
+		tickets = append(tickets, t...)
+		opts.StartTime = ""
+		opts.Cursor = cursor
+		if eos {
+			log.Info("Reached end of GetTickets loop", zap.Int("total_count", len(tickets)))
+			break
+		}
 
-	if err != nil {
-		log.Fatal("Fatal error", zap.String("Error", err.Error()))
 	}
-
-	tickets = append(tickets, t...)
-	opts.StartTime = ""
-	opts.Cursor = cursor
-
 	// Take the []zendesk.Ticket returned from the Zendesk wrapper
 	// and turn it into the []*model.Ticket used in Slab
 	for _, ticket := range tickets {
@@ -66,6 +75,5 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 		}
 		output = append(output, save)
 	}
-	log.Debug("Retrieved tickets from Zendesk in GetTickets loop", zap.Int("ticket_count", len(t)), zap.Int("total_count", len(output)))
 	return
 }
