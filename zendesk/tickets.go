@@ -27,7 +27,7 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 
 	var tickets []zendesk.Ticket
 	log.Debug("Beginning GetTickets loop")
-	rl := ratelimit.New(6, ratelimit.Per(time.Minute))
+	rl := ratelimit.New(10, ratelimit.Per(time.Minute))
 	// Loop through all pages of API response
 	for {
 		rl.Take()
