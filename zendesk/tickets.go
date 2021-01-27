@@ -34,7 +34,7 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 	if err != nil {
 		log.Fatal("Fatal error", zap.String("Error", err.Error()))
 	}
-	log.Debug("Retrieved tickets from Zendesk in GetTickets loop", zap.Int("ticket_count", len(t)), zap.Int("total_count", len(tickets)))
+
 	tickets = append(tickets, t...)
 	opts.StartTime = ""
 	opts.Cursor = cursor
@@ -66,5 +66,6 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 		}
 		output = append(output, save)
 	}
+	log.Debug("Retrieved tickets from Zendesk in GetTickets loop", zap.Int("ticket_count", len(t)), zap.Int("total_count", len(output)))
 	return
 }
