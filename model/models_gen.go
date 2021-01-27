@@ -23,24 +23,24 @@ type Organization struct {
 }
 
 type Ticket struct {
-	URL            string         `json:"URL"`
-	ID             int            `json:"ID"`
-	CreatedAt      string         `json:"CreatedAt"`
-	UpdatedAt      string         `json:"UpdatedAt"`
-	Subject        string         `json:"Subject"`
-	Description    string         `json:"Description"`
-	Priority       string         `json:"Priority"`
-	Status         string         `json:"Status"`
-	RequesterID    int            `json:"RequesterID"`
-	OrganizationID int            `json:"OrganizationID"`
-	GroupID        int            `json:"GroupID"`
-	Tags           []string       `json:"Tags"`
-	CustomFields   []*CustomField `json:"CustomFields"`
-	SLA            string         `json:"SLA"`
+	URL            string         `json:"url"`
+	ID             int            `json:"id"`
+	Createdat      string         `json:"createdat"`
+	Updatedat      string         `json:"updatedat"`
+	Subject        string         `json:"subject"`
+	Description    string         `json:"description"`
+	Priority       string         `json:"priority"`
+	Status         string         `json:"status"`
+	Requesterid    int            `json:"requesterid"`
+	Organizationid int            `json:"organizationid"`
+	Groupid        int            `json:"groupid"`
+	Tags           []string       `json:"tags"`
+	Customfields   []*CustomField `json:"customfields"`
+	SLA            string         `json:"sla"`
 }
 
 type Tickets struct {
-	Tickets []*Ticket `json:"Tickets"`
+	Tickets []*Ticket `json:"tickets"`
 	Count   int       `json:"Count"`
 }
 

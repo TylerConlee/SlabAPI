@@ -73,20 +73,20 @@ type ComplexityRoot struct {
 	}
 
 	Ticket struct {
-		CreatedAt      func(childComplexity int) int
-		CustomFields   func(childComplexity int) int
+		Createdat      func(childComplexity int) int
+		Customfields   func(childComplexity int) int
 		Description    func(childComplexity int) int
-		GroupID        func(childComplexity int) int
+		Groupid        func(childComplexity int) int
 		ID             func(childComplexity int) int
-		OrganizationID func(childComplexity int) int
+		Organizationid func(childComplexity int) int
 		Priority       func(childComplexity int) int
-		RequesterID    func(childComplexity int) int
+		Requesterid    func(childComplexity int) int
 		SLA            func(childComplexity int) int
 		Status         func(childComplexity int) int
 		Subject        func(childComplexity int) int
 		Tags           func(childComplexity int) int
 		URL            func(childComplexity int) int
-		UpdatedAt      func(childComplexity int) int
+		Updatedat      func(childComplexity int) int
 	}
 
 	Tickets struct {
@@ -338,103 +338,103 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetViewCount(childComplexity, args["config"].(model.ZendeskConfigInput), args["id"].(int)), true
 
-	case "Ticket.CreatedAt":
-		if e.complexity.Ticket.CreatedAt == nil {
+	case "Ticket.createdat":
+		if e.complexity.Ticket.Createdat == nil {
 			break
 		}
 
-		return e.complexity.Ticket.CreatedAt(childComplexity), true
+		return e.complexity.Ticket.Createdat(childComplexity), true
 
-	case "Ticket.CustomFields":
-		if e.complexity.Ticket.CustomFields == nil {
+	case "Ticket.customfields":
+		if e.complexity.Ticket.Customfields == nil {
 			break
 		}
 
-		return e.complexity.Ticket.CustomFields(childComplexity), true
+		return e.complexity.Ticket.Customfields(childComplexity), true
 
-	case "Ticket.Description":
+	case "Ticket.description":
 		if e.complexity.Ticket.Description == nil {
 			break
 		}
 
 		return e.complexity.Ticket.Description(childComplexity), true
 
-	case "Ticket.GroupID":
-		if e.complexity.Ticket.GroupID == nil {
+	case "Ticket.groupid":
+		if e.complexity.Ticket.Groupid == nil {
 			break
 		}
 
-		return e.complexity.Ticket.GroupID(childComplexity), true
+		return e.complexity.Ticket.Groupid(childComplexity), true
 
-	case "Ticket.ID":
+	case "Ticket.id":
 		if e.complexity.Ticket.ID == nil {
 			break
 		}
 
 		return e.complexity.Ticket.ID(childComplexity), true
 
-	case "Ticket.OrganizationID":
-		if e.complexity.Ticket.OrganizationID == nil {
+	case "Ticket.organizationid":
+		if e.complexity.Ticket.Organizationid == nil {
 			break
 		}
 
-		return e.complexity.Ticket.OrganizationID(childComplexity), true
+		return e.complexity.Ticket.Organizationid(childComplexity), true
 
-	case "Ticket.Priority":
+	case "Ticket.priority":
 		if e.complexity.Ticket.Priority == nil {
 			break
 		}
 
 		return e.complexity.Ticket.Priority(childComplexity), true
 
-	case "Ticket.RequesterID":
-		if e.complexity.Ticket.RequesterID == nil {
+	case "Ticket.requesterid":
+		if e.complexity.Ticket.Requesterid == nil {
 			break
 		}
 
-		return e.complexity.Ticket.RequesterID(childComplexity), true
+		return e.complexity.Ticket.Requesterid(childComplexity), true
 
-	case "Ticket.SLA":
+	case "Ticket.sla":
 		if e.complexity.Ticket.SLA == nil {
 			break
 		}
 
 		return e.complexity.Ticket.SLA(childComplexity), true
 
-	case "Ticket.Status":
+	case "Ticket.status":
 		if e.complexity.Ticket.Status == nil {
 			break
 		}
 
 		return e.complexity.Ticket.Status(childComplexity), true
 
-	case "Ticket.Subject":
+	case "Ticket.subject":
 		if e.complexity.Ticket.Subject == nil {
 			break
 		}
 
 		return e.complexity.Ticket.Subject(childComplexity), true
 
-	case "Ticket.Tags":
+	case "Ticket.tags":
 		if e.complexity.Ticket.Tags == nil {
 			break
 		}
 
 		return e.complexity.Ticket.Tags(childComplexity), true
 
-	case "Ticket.URL":
+	case "Ticket.url":
 		if e.complexity.Ticket.URL == nil {
 			break
 		}
 
 		return e.complexity.Ticket.URL(childComplexity), true
 
-	case "Ticket.UpdatedAt":
-		if e.complexity.Ticket.UpdatedAt == nil {
+	case "Ticket.updatedat":
+		if e.complexity.Ticket.Updatedat == nil {
 			break
 		}
 
-		return e.complexity.Ticket.UpdatedAt(childComplexity), true
+		return e.complexity.Ticket.Updatedat(childComplexity), true
 
 	case "Tickets.Count":
 		if e.complexity.Tickets.Count == nil {
@@ -443,7 +443,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Tickets.Count(childComplexity), true
 
-	case "Tickets.Tickets":
+	case "Tickets.tickets":
 		if e.complexity.Tickets.Tickets == nil {
 			break
 		}
@@ -769,25 +769,25 @@ type OrgFields {
 }
 
 type Tickets {
-    Tickets: [Ticket!]!
+    tickets: [Ticket!]!
     Count: Int!
 }
 
 type Ticket {
-    URL: String!
-    ID: Int!
-    CreatedAt: String!
-    UpdatedAt: String!
-    Subject: String!
-    Description: String!
-    Priority: String!
-    Status: String!
-    RequesterID: Int!
-    OrganizationID: Int!
-    GroupID: Int!
-    Tags: [String!]
-    CustomFields: [CustomField]
-    SLA: String!
+    url: String!
+    id: Int!
+    createdat: String!
+    updatedat: String!
+    subject: String!
+    description: String!
+    priority: String!
+    status: String!
+    requesterid: Int!
+    organizationid: Int!
+    groupid: Int!
+    tags: [String!]
+    customfields: [CustomField]
+    sla: String!
 }
 
 type Triggers {
@@ -1784,7 +1784,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_URL(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_url(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1819,7 +1819,7 @@ func (ec *executionContext) _Ticket_URL(ctx context.Context, field graphql.Colle
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_ID(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_id(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1854,7 +1854,7 @@ func (ec *executionContext) _Ticket_ID(ctx context.Context, field graphql.Collec
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_createdat(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1872,7 +1872,7 @@ func (ec *executionContext) _Ticket_CreatedAt(ctx context.Context, field graphql
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.CreatedAt, nil
+		return obj.Createdat, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1889,7 +1889,7 @@ func (ec *executionContext) _Ticket_CreatedAt(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_updatedat(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1907,7 +1907,7 @@ func (ec *executionContext) _Ticket_UpdatedAt(ctx context.Context, field graphql
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdatedAt, nil
+		return obj.Updatedat, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1924,7 +1924,7 @@ func (ec *executionContext) _Ticket_UpdatedAt(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_Subject(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_subject(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1959,7 +1959,7 @@ func (ec *executionContext) _Ticket_Subject(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_Description(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_description(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1994,7 +1994,7 @@ func (ec *executionContext) _Ticket_Description(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_Priority(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_priority(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2029,7 +2029,7 @@ func (ec *executionContext) _Ticket_Priority(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_Status(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_status(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2064,7 +2064,7 @@ func (ec *executionContext) _Ticket_Status(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_RequesterID(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_requesterid(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2082,7 +2082,7 @@ func (ec *executionContext) _Ticket_RequesterID(ctx context.Context, field graph
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.RequesterID, nil
+		return obj.Requesterid, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2099,7 +2099,7 @@ func (ec *executionContext) _Ticket_RequesterID(ctx context.Context, field graph
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_OrganizationID(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_organizationid(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2117,7 +2117,7 @@ func (ec *executionContext) _Ticket_OrganizationID(ctx context.Context, field gr
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.OrganizationID, nil
+		return obj.Organizationid, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2134,7 +2134,7 @@ func (ec *executionContext) _Ticket_OrganizationID(ctx context.Context, field gr
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_GroupID(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_groupid(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2152,7 +2152,7 @@ func (ec *executionContext) _Ticket_GroupID(ctx context.Context, field graphql.C
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.GroupID, nil
+		return obj.Groupid, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2169,7 +2169,7 @@ func (ec *executionContext) _Ticket_GroupID(ctx context.Context, field graphql.C
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_Tags(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_tags(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2201,7 +2201,7 @@ func (ec *executionContext) _Ticket_Tags(ctx context.Context, field graphql.Coll
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_CustomFields(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_customfields(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2219,7 +2219,7 @@ func (ec *executionContext) _Ticket_CustomFields(ctx context.Context, field grap
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.CustomFields, nil
+		return obj.Customfields, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2233,7 +2233,7 @@ func (ec *executionContext) _Ticket_CustomFields(ctx context.Context, field grap
 	return ec.marshalOCustomField2ᚕᚖgithubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐCustomField(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Ticket_SLA(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ticket_sla(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2268,7 +2268,7 @@ func (ec *executionContext) _Ticket_SLA(ctx context.Context, field graphql.Colle
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Tickets_Tickets(ctx context.Context, field graphql.CollectedField, obj *model.Tickets) (ret graphql.Marshaler) {
+func (ec *executionContext) _Tickets_tickets(ctx context.Context, field graphql.CollectedField, obj *model.Tickets) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4869,67 +4869,67 @@ func (ec *executionContext) _Ticket(ctx context.Context, sel ast.SelectionSet, o
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Ticket")
-		case "URL":
-			out.Values[i] = ec._Ticket_URL(ctx, field, obj)
+		case "url":
+			out.Values[i] = ec._Ticket_url(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "ID":
-			out.Values[i] = ec._Ticket_ID(ctx, field, obj)
+		case "id":
+			out.Values[i] = ec._Ticket_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "CreatedAt":
-			out.Values[i] = ec._Ticket_CreatedAt(ctx, field, obj)
+		case "createdat":
+			out.Values[i] = ec._Ticket_createdat(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "UpdatedAt":
-			out.Values[i] = ec._Ticket_UpdatedAt(ctx, field, obj)
+		case "updatedat":
+			out.Values[i] = ec._Ticket_updatedat(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "Subject":
-			out.Values[i] = ec._Ticket_Subject(ctx, field, obj)
+		case "subject":
+			out.Values[i] = ec._Ticket_subject(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "Description":
-			out.Values[i] = ec._Ticket_Description(ctx, field, obj)
+		case "description":
+			out.Values[i] = ec._Ticket_description(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "Priority":
-			out.Values[i] = ec._Ticket_Priority(ctx, field, obj)
+		case "priority":
+			out.Values[i] = ec._Ticket_priority(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "Status":
-			out.Values[i] = ec._Ticket_Status(ctx, field, obj)
+		case "status":
+			out.Values[i] = ec._Ticket_status(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "RequesterID":
-			out.Values[i] = ec._Ticket_RequesterID(ctx, field, obj)
+		case "requesterid":
+			out.Values[i] = ec._Ticket_requesterid(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "OrganizationID":
-			out.Values[i] = ec._Ticket_OrganizationID(ctx, field, obj)
+		case "organizationid":
+			out.Values[i] = ec._Ticket_organizationid(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "GroupID":
-			out.Values[i] = ec._Ticket_GroupID(ctx, field, obj)
+		case "groupid":
+			out.Values[i] = ec._Ticket_groupid(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "Tags":
-			out.Values[i] = ec._Ticket_Tags(ctx, field, obj)
-		case "CustomFields":
-			out.Values[i] = ec._Ticket_CustomFields(ctx, field, obj)
-		case "SLA":
-			out.Values[i] = ec._Ticket_SLA(ctx, field, obj)
+		case "tags":
+			out.Values[i] = ec._Ticket_tags(ctx, field, obj)
+		case "customfields":
+			out.Values[i] = ec._Ticket_customfields(ctx, field, obj)
+		case "sla":
+			out.Values[i] = ec._Ticket_sla(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -4955,8 +4955,8 @@ func (ec *executionContext) _Tickets(ctx context.Context, sel ast.SelectionSet, 
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Tickets")
-		case "Tickets":
-			out.Values[i] = ec._Tickets_Tickets(ctx, field, obj)
+		case "tickets":
+			out.Values[i] = ec._Tickets_tickets(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

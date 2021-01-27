@@ -36,25 +36,25 @@ type OrgFields {
 }
 
 type Tickets {
-    Tickets: [Ticket!]!
+    tickets: [Ticket!]!
     Count: Int!
 }
 
 type Ticket {
-    URL: String!
-    ID: Int!
-    CreatedAt: String!
-    UpdatedAt: String!
-    Subject: String!
-    Description: String!
-    Priority: String!
-    Status: String!
-    RequesterID: Int!
-    OrganizationID: Int!
-    GroupID: Int!
-    Tags: [String!]
-    CustomFields: [CustomField]
-    SLA: String!
+    url: String!
+    id: Int!
+    createdat: String!
+    updatedat: String!
+    subject: String!
+    description: String!
+    priority: String!
+    status: String!
+    requesterid: Int!
+    organizationid: Int!
+    groupid: Int!
+    tags: [String!]
+    customfields: [CustomField]
+    sla: String!
 }
 
 type Triggers {
