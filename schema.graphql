@@ -1,6 +1,6 @@
 type Query {
     getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
-    getAllTickets(config:ZendeskConfigInput!): Tickets!
+    getAllTickets(user:String!,apikey:String!,url:String!): Tickets!
     getAllTriggers(config:ZendeskConfigInput!): Triggers!
     getTrigger(config:ZendeskConfigInput!,id:Int!): Trigger!
     getAllViews(config:ZendeskConfigInput!): Views!

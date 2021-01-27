@@ -63,7 +63,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetAllTickets   func(childComplexity int, config model.ZendeskConfigInput) int
+		GetAllTickets   func(childComplexity int, user string, apikey string, url string) int
 		GetAllTriggers  func(childComplexity int, config model.ZendeskConfigInput) int
 		GetAllViews     func(childComplexity int, config model.ZendeskConfigInput) int
 		GetOrganization func(childComplexity int, config model.ZendeskConfigInput, id int) int
@@ -154,7 +154,7 @@ type ComplexityRoot struct {
 
 type QueryResolver interface {
 	GetOrganization(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.Organization, error)
-	GetAllTickets(ctx context.Context, config model.ZendeskConfigInput) (*model.Tickets, error)
+	GetAllTickets(ctx context.Context, user string, apikey string, url string) (*model.Tickets, error)
 	GetAllTriggers(ctx context.Context, config model.ZendeskConfigInput) (*model.Triggers, error)
 	GetTrigger(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.Trigger, error)
 	GetAllViews(ctx context.Context, config model.ZendeskConfigInput) (*model.Views, error)
@@ -264,7 +264,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetAllTickets(childComplexity, args["config"].(model.ZendeskConfigInput)), true
+		return e.complexity.Query.GetAllTickets(childComplexity, args["user"].(string), args["apikey"].(string), args["url"].(string)), true
 
 	case "Query.getAllTriggers":
 		if e.complexity.Query.GetAllTriggers == nil {
@@ -733,7 +733,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 var sources = []*ast.Source{
 	{Name: "schema.graphql", Input: `type Query {
     getOrganization(config:ZendeskConfigInput!,id:Int!): Organization!
-    getAllTickets(config:ZendeskConfigInput!): Tickets!
+    getAllTickets(user:String!,apikey:String!,url:String!): Tickets!
     getAllTriggers(config:ZendeskConfigInput!): Triggers!
     getTrigger(config:ZendeskConfigInput!,id:Int!): Trigger!
     getAllViews(config:ZendeskConfigInput!): Views!
@@ -873,15 +873,33 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_Query_getAllTickets_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.ZendeskConfigInput
-	if tmp, ok := rawArgs["config"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("config"))
-		arg0, err = ec.unmarshalNZendeskConfigInput2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfigInput(ctx, tmp)
+	var arg0 string
+	if tmp, ok := rawArgs["user"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("user"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["config"] = arg0
+	args["user"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["apikey"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("apikey"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["apikey"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["url"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
+		arg2, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["url"] = arg2
 	return args, nil
 }
 
@@ -1486,7 +1504,7 @@ func (ec *executionContext) _Query_getAllTickets(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetAllTickets(rctx, args["config"].(model.ZendeskConfigInput))
+		return ec.resolvers.Query().GetAllTickets(rctx, args["user"].(string), args["apikey"].(string), args["url"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

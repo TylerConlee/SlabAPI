@@ -14,7 +14,12 @@ var c *zendesk.Client
 // makes a request to Zendesk to the /tickets.json endpoint. This returns all
 // tickets in the Tickets type, found in the schema.
 // Endpoint: /tickets.json
-func (r *queryResolver) GetAllTickets(ctx context.Context, config model.ZendeskConfigInput) (*model.Tickets, error) {
+func (r *queryResolver) GetAllTickets(ctx context.Context, user string, apikey string, url string) (*model.Tickets, error) {
+	config := model.ZendeskConfigInput{
+		User:   user,
+		Apikey: apikey,
+		URL:    url,
+	}
 	c = zendesk.Connect(&config)
 	output, err := c.GetTickets(ctx)
 	if err != nil {
