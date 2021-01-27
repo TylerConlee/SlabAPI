@@ -53,7 +53,6 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 	for _, ticket := range tickets {
 		var sla string
 		if len(ticket.Slas.PolicyMetrics) >= 1 {
-			log.Debug("Policy metrics is longer than 0")
 			p := ticket.Slas.PolicyMetrics[0].(map[string]interface{})
 			if p["breach_at"] != nil {
 				sla = p["breach_at"].(string)
