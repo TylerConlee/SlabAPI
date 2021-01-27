@@ -42,10 +42,6 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 		tickets = append(tickets, t...)
 		opts.StartTime = ""
 		opts.Cursor = cursor
-		if eos {
-			log.Info("Reached end of GetTickets loop", zap.Int("total_count", len(tickets)))
-			break
-		}
 
 	}
 	// Take the []zendesk.Ticket returned from the Zendesk wrapper
