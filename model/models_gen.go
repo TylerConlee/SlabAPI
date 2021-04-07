@@ -31,6 +31,7 @@ type Ticket struct {
 	Description    string         `json:"description"`
 	Priority       string         `json:"priority"`
 	Status         string         `json:"status"`
+	Assigneeid     int            `json:"assigneeid"`
 	Requesterid    int            `json:"requesterid"`
 	Organizationid int            `json:"organizationid"`
 	Groupid        int            `json:"groupid"`

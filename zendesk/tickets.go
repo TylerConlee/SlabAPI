@@ -67,6 +67,7 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 			Description:    ticket.Description,
 			Priority:       ticket.Priority,
 			Status:         ticket.Status,
+			Assigneeid: int(ticket.AssigneeID),
 			Requesterid:    int(ticket.RequesterID),
 			Organizationid: int(ticket.OrganizationID),
 			Groupid:        int(ticket.GroupID),

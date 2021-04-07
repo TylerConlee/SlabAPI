@@ -49,6 +49,7 @@ type Ticket {
     description: String!
     priority: String!
     status: String!
+    assigneeid: Int!
     requesterid: Int!
     organizationid: Int!
     groupid: Int!

@@ -73,6 +73,7 @@ type ComplexityRoot struct {
 	}
 
 	Ticket struct {
+		Assigneeid     func(childComplexity int) int
 		Createdat      func(childComplexity int) int
 		Customfields   func(childComplexity int) int
 		Description    func(childComplexity int) int
@@ -337,6 +338,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetViewCount(childComplexity, args["config"].(model.ZendeskConfigInput), args["id"].(int)), true
+
+	case "Ticket.assigneeid":
+		if e.complexity.Ticket.Assigneeid == nil {
+			break
+		}
+
+		return e.complexity.Ticket.Assigneeid(childComplexity), true
 
 	case "Ticket.createdat":
 		if e.complexity.Ticket.Createdat == nil {
@@ -782,6 +790,7 @@ type Ticket {
     description: String!
     priority: String!
     status: String!
+    assigneeid: Int!
     requesterid: Int!
     organizationid: Int!
     groupid: Int!
@@ -2080,6 +2089,41 @@ func (ec *executionContext) _Ticket_status(ctx context.Context, field graphql.Co
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Ticket_assigneeid(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Ticket",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Assigneeid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Ticket_requesterid(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
@@ -4924,6 +4968,11 @@ func (ec *executionContext) _Ticket(ctx context.Context, sel ast.SelectionSet, o
 			}
 		case "status":
 			out.Values[i] = ec._Ticket_status(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "assigneeid":
+			out.Values[i] = ec._Ticket_assigneeid(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
