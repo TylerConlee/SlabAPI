@@ -3,9 +3,11 @@ type Query {
     getAllTickets(user:String!,apikey:String!,url:String!): Tickets!
     getAllTriggers(config:ZendeskConfigInput!): Triggers!
     getTrigger(config:ZendeskConfigInput!,id:Int!): Trigger!
+    getUser(config:ZendeskConfigInput!,id:Int!): User!
     getAllViews(config:ZendeskConfigInput!): Views!
     getView(config:ZendeskConfigInput!,id:Int!): View!
     getViewCount(config:ZendeskConfigInput!,id:Int!): ViewCount!
+    
     
 }
 
@@ -18,6 +20,18 @@ input ZendeskConfigInput {
 type CustomField {
     ID: Int
     Value: String
+}
+
+type User {
+    Active: Boolean!
+    CreatedAt: String!
+    DefaultGroup: Int!
+    Email: String!
+    ID: Int!
+    LastLogin: String!
+    Name: String!
+    Timezone: String!
+    UpdatedAt: String!
 }
 
 type Organization {

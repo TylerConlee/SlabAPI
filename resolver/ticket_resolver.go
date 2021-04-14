@@ -48,3 +48,11 @@ func (r *queryResolver) GetOrganization(ctx context.Context, config model.Zendes
 
 	return org, nil
 }
+
+
+// ***** GET user functions ***** //
+//
+
+func (r *queryResolver) GetUser(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.User, error) {
+	return nil, nil
+}

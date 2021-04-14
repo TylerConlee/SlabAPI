@@ -80,6 +80,18 @@ type Triggers struct {
 	Count    int        `json:"Count"`
 }
 
+type User struct {
+	Active       bool   `json:"Active"`
+	CreatedAt    string `json:"CreatedAt"`
+	DefaultGroup int    `json:"DefaultGroup"`
+	Email        string `json:"Email"`
+	ID           int    `json:"ID"`
+	LastLogin    string `json:"LastLogin"`
+	Name         string `json:"Name"`
+	Timezone     string `json:"Timezone"`
+	UpdatedAt    string `json:"UpdatedAt"`
+}
+
 type View struct {
 	ID          int    `json:"ID"`
 	Title       string `json:"Title"`

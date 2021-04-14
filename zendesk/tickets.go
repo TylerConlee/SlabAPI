@@ -78,3 +78,4 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 	}
 	return
 }
+
