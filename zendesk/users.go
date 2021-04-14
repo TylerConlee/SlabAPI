@@ -20,7 +20,7 @@ func (c *Client) GetUser(ctx.Context) (output *model.User, err Error) {
 		Name: o.Name,
 		CreatedAt: o.CreatedAt.String(),
 		UpdatedAt: o.UpdatedAt.String(),
-		LastLoginAt: o.LastLogin.String(),
+		LastLogin: o.LastLoginAt.String(),
 		Timezone: o.Timezone,
 	}
 	return
