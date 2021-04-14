@@ -10,7 +10,7 @@ import (
 // user provided by the context to the Zendesk API wrapper. Once it
 // retreives that data from Zendesk, it converts the output into a model.
 // user.
-func (c *Client) GetUser(ctx.Context) (output *model.User, err Error) {
+func (c *Client) GetUser(ctx context.Context, id int) (output *model.User, err error) {
 	o, err := c.client.GetUser(ctx, int64(id))
 	output = &model.User{
 		Active: o.Active,
