@@ -3,7 +3,7 @@ type Query {
     getAllTickets(user:String!,apikey:String!,url:String!): Tickets!
     getAllTriggers(config:ZendeskConfigInput!): Triggers!
     getTrigger(config:ZendeskConfigInput!,id:Int!): Trigger!
-    getUser(config:ZendeskConfigInput!,id:Int!): User!
+    getUser(user:String!,apikey:String!,url:String!,id:String!): User!
     getAllViews(config:ZendeskConfigInput!): Views!
     getView(config:ZendeskConfigInput!,id:Int!): View!
     getViewCount(config:ZendeskConfigInput!,id:Int!): ViewCount!
@@ -23,15 +23,15 @@ type CustomField {
 }
 
 type User {
-    Active: Boolean!
-    CreatedAt: String!
-    DefaultGroup: Int!
-    Email: String!
-    ID: Int!
-    LastLogin: String!
-    Name: String!
-    Timezone: String!
-    UpdatedAt: String!
+    active: Boolean!
+    createdat: String!
+    defaultgroup: String!
+    email: String!
+    id: String!
+    lastlogin: String!
+    name: String!
+    timezone: String!
+    updatedat: String!
 }
 
 type Organization {
@@ -63,9 +63,9 @@ type Ticket {
     description: String!
     priority: String!
     status: String!
-    assigneeid: Int!
-    requesterid: Int!
-    organizationid: Int!
+    assigneeid: String!
+    requesterid: String!
+    organizationid: String!
     groupid: Int!
     tags: [String!]
     customfields: [CustomField]

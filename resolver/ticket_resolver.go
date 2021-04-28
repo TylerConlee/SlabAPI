@@ -49,10 +49,20 @@ func (r *queryResolver) GetOrganization(ctx context.Context, config model.Zendes
 	return org, nil
 }
 
-
 // ***** GET user functions ***** //
 //
 
-func (r *queryResolver) GetUser(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.User, error) {
-	return nil, nil
+func (r *queryResolver) GetUser(ctx context.Context, user string, apikey string, url string, id string) (*model.User, error) {
+	config := model.ZendeskConfigInput{
+		User:   user,
+		Apikey: apikey,
+		URL:    url,
+	}
+	c = zendesk.Connect(&config)
+	org, err := c.GetUser(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return org, nil
 }

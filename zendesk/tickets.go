@@ -38,8 +38,9 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 		if err != nil {
 			log.Fatal("Fatal error", zap.String("Error", err.Error()))
 		}
-		log.Debug("Retrieved tickets from Zendesk in GetTickets loop", zap.Int("ticket_count", len(t)), zap.Int("total_count", len(tickets)))
 		tickets = append(tickets, t...)
+		log.Debug("Retrieved tickets from Zendesk in GetTickets loop", zap.Int("ticket_count", len(t)), zap.Int("total_count", len(tickets)))
+
 		opts.StartTime = ""
 		opts.Cursor = cursor
 		if eos {
@@ -58,6 +59,10 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 				sla = p["breach_at"].(string)
 			}
 		}
+		// Type conversion to string, as GraphQL does not suppport int64
+		assignee := strconv.Itoa(int(ticket.AssigneeID))
+		requester := strconv.Itoa(int(ticket.RequesterID))
+		organization := strconv.Itoa(int(ticket.OrganizationID))
 		save := &model.Ticket{
 			URL:            ticket.URL,
 			ID:             int(ticket.ID),
@@ -67,9 +72,9 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 			Description:    ticket.Description,
 			Priority:       ticket.Priority,
 			Status:         ticket.Status,
-			Assigneeid: int(ticket.AssigneeID),
-			Requesterid:    int(ticket.RequesterID),
-			Organizationid: int(ticket.OrganizationID),
+			Assigneeid:     assignee,
+			Requesterid:    requester,
+			Organizationid: organization,
 			Groupid:        int(ticket.GroupID),
 			Tags:           ticket.Tags,
 			SLA:            sla,
@@ -78,4 +83,3 @@ func (c *Client) GetTickets(ctx context.Context) (output []*model.Ticket, err er
 	}
 	return
 }
-

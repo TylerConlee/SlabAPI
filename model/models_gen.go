@@ -31,9 +31,9 @@ type Ticket struct {
 	Description    string         `json:"description"`
 	Priority       string         `json:"priority"`
 	Status         string         `json:"status"`
-	Assigneeid     int            `json:"assigneeid"`
-	Requesterid    int            `json:"requesterid"`
-	Organizationid int            `json:"organizationid"`
+	Assigneeid     string         `json:"assigneeid"`
+	Requesterid    string         `json:"requesterid"`
+	Organizationid string         `json:"organizationid"`
 	Groupid        int            `json:"groupid"`
 	Tags           []string       `json:"tags"`
 	Customfields   []*CustomField `json:"customfields"`
@@ -81,15 +81,15 @@ type Triggers struct {
 }
 
 type User struct {
-	Active       bool   `json:"Active"`
-	CreatedAt    string `json:"CreatedAt"`
-	DefaultGroup int    `json:"DefaultGroup"`
-	Email        string `json:"Email"`
-	ID           int    `json:"ID"`
-	LastLogin    string `json:"LastLogin"`
-	Name         string `json:"Name"`
-	Timezone     string `json:"Timezone"`
-	UpdatedAt    string `json:"UpdatedAt"`
+	Active       bool   `json:"active"`
+	Createdat    string `json:"createdat"`
+	Defaultgroup string `json:"defaultgroup"`
+	Email        string `json:"email"`
+	ID           string `json:"id"`
+	Lastlogin    string `json:"lastlogin"`
+	Name         string `json:"name"`
+	Timezone     string `json:"timezone"`
+	Updatedat    string `json:"updatedat"`
 }
 
 type View struct {

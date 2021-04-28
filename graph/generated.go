@@ -68,7 +68,7 @@ type ComplexityRoot struct {
 		GetAllViews     func(childComplexity int, config model.ZendeskConfigInput) int
 		GetOrganization func(childComplexity int, config model.ZendeskConfigInput, id int) int
 		GetTrigger      func(childComplexity int, config model.ZendeskConfigInput, id int) int
-		GetUser         func(childComplexity int, config model.ZendeskConfigInput, id int) int
+		GetUser         func(childComplexity int, user string, apikey string, url string, id string) int
 		GetView         func(childComplexity int, config model.ZendeskConfigInput, id int) int
 		GetViewCount    func(childComplexity int, config model.ZendeskConfigInput, id int) int
 	}
@@ -133,14 +133,14 @@ type ComplexityRoot struct {
 
 	User struct {
 		Active       func(childComplexity int) int
-		CreatedAt    func(childComplexity int) int
-		DefaultGroup func(childComplexity int) int
+		Createdat    func(childComplexity int) int
+		Defaultgroup func(childComplexity int) int
 		Email        func(childComplexity int) int
 		ID           func(childComplexity int) int
-		LastLogin    func(childComplexity int) int
+		Lastlogin    func(childComplexity int) int
 		Name         func(childComplexity int) int
 		Timezone     func(childComplexity int) int
-		UpdatedAt    func(childComplexity int) int
+		Updatedat    func(childComplexity int) int
 	}
 
 	View struct {
@@ -171,7 +171,7 @@ type QueryResolver interface {
 	GetAllTickets(ctx context.Context, user string, apikey string, url string) (*model.Tickets, error)
 	GetAllTriggers(ctx context.Context, config model.ZendeskConfigInput) (*model.Triggers, error)
 	GetTrigger(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.Trigger, error)
-	GetUser(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.User, error)
+	GetUser(ctx context.Context, user string, apikey string, url string, id string) (*model.User, error)
 	GetAllViews(ctx context.Context, config model.ZendeskConfigInput) (*model.Views, error)
 	GetView(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.View, error)
 	GetViewCount(ctx context.Context, config model.ZendeskConfigInput, id int) (*model.ViewCount, error)
@@ -339,7 +339,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetUser(childComplexity, args["config"].(model.ZendeskConfigInput), args["id"].(int)), true
+		return e.complexity.Query.GetUser(childComplexity, args["user"].(string), args["apikey"].(string), args["url"].(string), args["id"].(string)), true
 
 	case "Query.getView":
 		if e.complexity.Query.GetView == nil {
@@ -624,68 +624,68 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Triggers.Triggers(childComplexity), true
 
-	case "User.Active":
+	case "User.active":
 		if e.complexity.User.Active == nil {
 			break
 		}
 
 		return e.complexity.User.Active(childComplexity), true
 
-	case "User.CreatedAt":
-		if e.complexity.User.CreatedAt == nil {
+	case "User.createdat":
+		if e.complexity.User.Createdat == nil {
 			break
 		}
 
-		return e.complexity.User.CreatedAt(childComplexity), true
+		return e.complexity.User.Createdat(childComplexity), true
 
-	case "User.DefaultGroup":
-		if e.complexity.User.DefaultGroup == nil {
+	case "User.defaultgroup":
+		if e.complexity.User.Defaultgroup == nil {
 			break
 		}
 
-		return e.complexity.User.DefaultGroup(childComplexity), true
+		return e.complexity.User.Defaultgroup(childComplexity), true
 
-	case "User.Email":
+	case "User.email":
 		if e.complexity.User.Email == nil {
 			break
 		}
 
 		return e.complexity.User.Email(childComplexity), true
 
-	case "User.ID":
+	case "User.id":
 		if e.complexity.User.ID == nil {
 			break
 		}
 
 		return e.complexity.User.ID(childComplexity), true
 
-	case "User.LastLogin":
-		if e.complexity.User.LastLogin == nil {
+	case "User.lastlogin":
+		if e.complexity.User.Lastlogin == nil {
 			break
 		}
 
-		return e.complexity.User.LastLogin(childComplexity), true
+		return e.complexity.User.Lastlogin(childComplexity), true
 
-	case "User.Name":
+	case "User.name":
 		if e.complexity.User.Name == nil {
 			break
 		}
 
 		return e.complexity.User.Name(childComplexity), true
 
-	case "User.Timezone":
+	case "User.timezone":
 		if e.complexity.User.Timezone == nil {
 			break
 		}
 
 		return e.complexity.User.Timezone(childComplexity), true
 
-	case "User.UpdatedAt":
-		if e.complexity.User.UpdatedAt == nil {
+	case "User.updatedat":
+		if e.complexity.User.Updatedat == nil {
 			break
 		}
 
-		return e.complexity.User.UpdatedAt(childComplexity), true
+		return e.complexity.User.Updatedat(childComplexity), true
 
 	case "View.Active":
 		if e.complexity.View.Active == nil {
@@ -833,7 +833,7 @@ var sources = []*ast.Source{
     getAllTickets(user:String!,apikey:String!,url:String!): Tickets!
     getAllTriggers(config:ZendeskConfigInput!): Triggers!
     getTrigger(config:ZendeskConfigInput!,id:Int!): Trigger!
-    getUser(config:ZendeskConfigInput!,id:Int!): User!
+    getUser(user:String!,apikey:String!,url:String!,id:String!): User!
     getAllViews(config:ZendeskConfigInput!): Views!
     getView(config:ZendeskConfigInput!,id:Int!): View!
     getViewCount(config:ZendeskConfigInput!,id:Int!): ViewCount!
@@ -853,15 +853,15 @@ type CustomField {
 }
 
 type User {
-    Active: Boolean!
-    CreatedAt: String!
-    DefaultGroup: Int!
-    Email: String!
-    ID: Int!
-    LastLogin: String!
-    Name: String!
-    Timezone: String!
-    UpdatedAt: String!
+    active: Boolean!
+    createdat: String!
+    defaultgroup: String!
+    email: String!
+    id: String!
+    lastlogin: String!
+    name: String!
+    timezone: String!
+    updatedat: String!
 }
 
 type Organization {
@@ -893,9 +893,9 @@ type Ticket {
     description: String!
     priority: String!
     status: String!
-    assigneeid: Int!
-    requesterid: Int!
-    organizationid: Int!
+    assigneeid: String!
+    requesterid: String!
+    organizationid: String!
     groupid: Int!
     tags: [String!]
     customfields: [CustomField]
@@ -1096,24 +1096,42 @@ func (ec *executionContext) field_Query_getTrigger_args(ctx context.Context, raw
 func (ec *executionContext) field_Query_getUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.ZendeskConfigInput
-	if tmp, ok := rawArgs["config"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("config"))
-		arg0, err = ec.unmarshalNZendeskConfigInput2githubᚗcomᚋtylerconleeᚋSlabAPIᚋmodelᚐZendeskConfigInput(ctx, tmp)
+	var arg0 string
+	if tmp, ok := rawArgs["user"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("user"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["config"] = arg0
-	var arg1 int
+	args["user"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["apikey"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("apikey"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["apikey"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["url"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
+		arg2, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["url"] = arg2
+	var arg3 string
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		arg3, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg1
+	args["id"] = arg3
 	return args, nil
 }
 
@@ -1766,7 +1784,7 @@ func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.Co
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetUser(rctx, args["config"].(model.ZendeskConfigInput), args["id"].(int))
+		return ec.resolvers.Query().GetUser(rctx, args["user"].(string), args["apikey"].(string), args["url"].(string), args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2290,9 +2308,9 @@ func (ec *executionContext) _Ticket_assigneeid(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Ticket_requesterid(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
@@ -2325,9 +2343,9 @@ func (ec *executionContext) _Ticket_requesterid(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Ticket_organizationid(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
@@ -2360,9 +2378,9 @@ func (ec *executionContext) _Ticket_organizationid(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Ticket_groupid(ctx context.Context, field graphql.CollectedField, obj *model.Ticket) (ret graphql.Marshaler) {
@@ -3269,7 +3287,7 @@ func (ec *executionContext) _Triggers_Count(ctx context.Context, field graphql.C
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_Active(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_active(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3304,7 +3322,7 @@ func (ec *executionContext) _User_Active(ctx context.Context, field graphql.Coll
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_createdat(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3322,7 +3340,7 @@ func (ec *executionContext) _User_CreatedAt(ctx context.Context, field graphql.C
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.CreatedAt, nil
+		return obj.Createdat, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3339,7 +3357,7 @@ func (ec *executionContext) _User_CreatedAt(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_DefaultGroup(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_defaultgroup(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3357,7 +3375,7 @@ func (ec *executionContext) _User_DefaultGroup(ctx context.Context, field graphq
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.DefaultGroup, nil
+		return obj.Defaultgroup, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3369,12 +3387,12 @@ func (ec *executionContext) _User_DefaultGroup(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_Email(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3409,7 +3427,7 @@ func (ec *executionContext) _User_Email(ctx context.Context, field graphql.Colle
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_ID(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3439,12 +3457,12 @@ func (ec *executionContext) _User_ID(ctx context.Context, field graphql.Collecte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_LastLogin(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_lastlogin(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3462,7 +3480,7 @@ func (ec *executionContext) _User_LastLogin(ctx context.Context, field graphql.C
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.LastLogin, nil
+		return obj.Lastlogin, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3479,7 +3497,7 @@ func (ec *executionContext) _User_LastLogin(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_Name(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_name(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3514,7 +3532,7 @@ func (ec *executionContext) _User_Name(ctx context.Context, field graphql.Collec
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_Timezone(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_timezone(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3549,7 +3567,7 @@ func (ec *executionContext) _User_Timezone(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_updatedat(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3567,7 +3585,7 @@ func (ec *executionContext) _User_UpdatedAt(ctx context.Context, field graphql.C
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdatedAt, nil
+		return obj.Updatedat, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5762,48 +5780,48 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("User")
-		case "Active":
-			out.Values[i] = ec._User_Active(ctx, field, obj)
+		case "active":
+			out.Values[i] = ec._User_active(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "CreatedAt":
-			out.Values[i] = ec._User_CreatedAt(ctx, field, obj)
+		case "createdat":
+			out.Values[i] = ec._User_createdat(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "DefaultGroup":
-			out.Values[i] = ec._User_DefaultGroup(ctx, field, obj)
+		case "defaultgroup":
+			out.Values[i] = ec._User_defaultgroup(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "Email":
-			out.Values[i] = ec._User_Email(ctx, field, obj)
+		case "email":
+			out.Values[i] = ec._User_email(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "ID":
-			out.Values[i] = ec._User_ID(ctx, field, obj)
+		case "id":
+			out.Values[i] = ec._User_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "LastLogin":
-			out.Values[i] = ec._User_LastLogin(ctx, field, obj)
+		case "lastlogin":
+			out.Values[i] = ec._User_lastlogin(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "Name":
-			out.Values[i] = ec._User_Name(ctx, field, obj)
+		case "name":
+			out.Values[i] = ec._User_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "Timezone":
-			out.Values[i] = ec._User_Timezone(ctx, field, obj)
+		case "timezone":
+			out.Values[i] = ec._User_timezone(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "UpdatedAt":
-			out.Values[i] = ec._User_UpdatedAt(ctx, field, obj)
+		case "updatedat":
+			out.Values[i] = ec._User_updatedat(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

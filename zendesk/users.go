@@ -1,7 +1,9 @@
-package zendesk 
+package zendesk
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/tylerconlee/SlabAPI/model"
 )
@@ -10,18 +12,22 @@ import (
 // user provided by the context to the Zendesk API wrapper. Once it
 // retreives that data from Zendesk, it converts the output into a model.
 // user.
-func (c *Client) GetUser(ctx context.Context, id int) (output *model.User, err error) {
-	o, err := c.client.GetUser(ctx, int64(id))
+func (c *Client) GetUser(ctx context.Context, id string) (output *model.User, err error) {
+	fmt.Println(id)
+	userID, err := strconv.Atoi(id)
+	o, err := c.client.GetUser(ctx, int64(userID))
+	user := strconv.FormatInt(o.ID, 10)
+	defaultGroup := strconv.FormatInt(o.DefaultGroupID, 10)
 	output = &model.User{
-		Active: o.Active,
-		DefaultGroup: int(o.DefaultGroupID),
-		ID: int(o.ID),
-		Email: o.Email,
-		Name: o.Name,
-		CreatedAt: o.CreatedAt.String(),
-		UpdatedAt: o.UpdatedAt.String(),
-		LastLogin: o.LastLoginAt.String(),
-		Timezone: o.Timezone,
+		Active:       o.Active,
+		Defaultgroup: defaultGroup,
+		ID:           user,
+		Email:        o.Email,
+		Name:         o.Name,
+		Createdat:    o.CreatedAt.String(),
+		Updatedat:    o.UpdatedAt.String(),
+		Lastlogin:    o.LastLoginAt.String(),
+		Timezone:     o.Timezone,
 	}
 	return
 }
