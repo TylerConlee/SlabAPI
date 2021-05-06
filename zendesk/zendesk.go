@@ -7,7 +7,6 @@ import (
 	logger "github.com/tylerconlee/SlabAPI/log"
 	"github.com/tylerconlee/SlabAPI/model"
 	"github.com/tylerconlee/zendesk-go/zendesk"
-	"go.uber.org/zap"
 )
 
 var (
@@ -44,6 +43,6 @@ func Connect(config *model.ZendeskConfigInput) *Client {
 	}
 	c.client.SetSubdomain(config.URL)
 	c.client.SetCredential(zendesk.NewAPITokenCredential(config.User, config.Apikey))
-	log.Info("Zendesk credentials set. Client successfully created", zap.String("subdomain", config.URL))
+	//log.Info("Zendesk credentials set. Client successfully created", zap.String("subdomain", config.URL))
 	return c
 }

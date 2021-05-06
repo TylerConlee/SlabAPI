@@ -2,7 +2,6 @@ package zendesk
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/tylerconlee/SlabAPI/model"
@@ -13,7 +12,6 @@ import (
 // retreives that data from Zendesk, it converts the output into a model.
 // user.
 func (c *Client) GetUser(ctx context.Context, id string) (output *model.User, err error) {
-	fmt.Println(id)
 	userID, err := strconv.Atoi(id)
 	o, err := c.client.GetUser(ctx, int64(userID))
 	user := strconv.FormatInt(o.ID, 10)
